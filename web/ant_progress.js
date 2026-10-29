@@ -4,6 +4,8 @@
  * Cycles 8 transparent PNG frames (1-ant.png -> 8-ant.png) at ~10 FPS (100ms)
  * Continuous walking animation across a glowing progress track.
  * Supports single or multi-ant marching.
+ * High-contrast white track background and white rim glow ensures 100% visibility.
+ * Positioned right at the leading end of the orange progress bar.
  */
 class OrganixAntProgressBar {
     constructor(options = {}) {
@@ -78,10 +80,10 @@ class OrganixAntProgressBar {
                     <!-- Ant element(s) inserted here -->
                 </div>
                 
-                <!-- Track Bar Background -->
-                <div class="organix-progress-track relative w-full h-3.5 bg-slate-200/90 dark:bg-black/60 rounded-full overflow-hidden border border-slate-300/50 dark:border-white/10 shadow-inner">
+                <!-- Track Bar Background (Crisp White / Light Track for optimal contrast) -->
+                <div class="organix-progress-track relative w-full h-3.5 bg-white/90 dark:bg-white/85 rounded-full overflow-hidden border border-slate-300 dark:border-white/30 shadow-inner">
                     <!-- Glow Fill Behind the Ant -->
-                    <div class="organix-progress-fill h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 rounded-full transition-all duration-300 ease-out shadow-sm shadow-amber-500/20" style="width: 0%"></div>
+                    <div class="organix-progress-fill h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 rounded-full transition-all duration-150 ease-out shadow-sm shadow-amber-500/30" style="width: 0%"></div>
                 </div>
             </div>
             
@@ -103,19 +105,22 @@ class OrganixAntProgressBar {
         this.stage = this.wrapper.querySelector('.organix-ants-stage');
         this.track = this.wrapper.querySelector('.organix-progress-track');
         
-        // Create Ant DOM Elements
+        // Create Ant DOM Elements with White Rim Glow & positioned at end of orange progress
         this.ants.forEach(ant => {
             const antImg = document.createElement('img');
             antImg.src = this.frames[ant.frameIndex];
             antImg.alt = "Walking Ant";
-            antImg.className = "absolute pointer-events-none select-none drop-shadow-lg";
+            antImg.className = "absolute pointer-events-none select-none transition-transform duration-100 ease-linear";
             antImg.style.width = `${this.antSize}px`;
             antImg.style.height = `${this.antSize}px`;
             antImg.style.top = `-12px`; // sits precisely with feet on track
             antImg.style.left = `0%`;
-            antImg.style.transform = `translateX(-50%)`; // center ant on exact progress point
+            // Position ant at the leading end of the orange progress (leading the progress line)
+            antImg.style.transform = `translateX(-78%)`;
             antImg.style.objectFit = 'contain';
             antImg.style.zIndex = '10';
+            // Crisp White Backlight Rim Glow for 100% visibility on all backgrounds:
+            antImg.style.filter = "drop-shadow(0 0 3px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(245, 158, 11, 0.6))";
             this.stage.appendChild(antImg);
             ant.element = antImg;
         });
@@ -160,7 +165,7 @@ class OrganixAntProgressBar {
         }
         
         // Update Ant position:
-        // 0% = far left, 50% = center, 100% = far right
+        // Positioned at the end of the orange progress
         this.ants.forEach(ant => {
             if (ant.element) {
                 const antP = Math.max(0, Math.min(100, p + ant.offsetPercent));
@@ -193,17 +198,20 @@ class OrganixAntProgressBar {
                 offsetPercent: (i * -6),
                 element: null
             };
+            
             const antImg = document.createElement('img');
             antImg.src = this.frames[ant.frameIndex];
             antImg.alt = "Walking Ant";
-            antImg.className = "absolute pointer-events-none select-none drop-shadow-lg";
+            antImg.className = "absolute pointer-events-none select-none transition-transform duration-100 ease-linear";
             antImg.style.width = `${this.antSize}px`;
             antImg.style.height = `${this.antSize}px`;
             antImg.style.top = `-12px`;
             antImg.style.left = `0%`;
-            antImg.style.transform = `translateX(-50%)`;
+            antImg.style.transform = `translateX(-78%)`;
             antImg.style.objectFit = 'contain';
             antImg.style.zIndex = '10';
+            antImg.style.filter = "drop-shadow(0 0 3px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(245, 158, 11, 0.6))";
+            
             this.stage.appendChild(antImg);
             ant.element = antImg;
             this.ants.push(ant);
@@ -212,58 +220,15 @@ class OrganixAntProgressBar {
     }
     
     destroy() {
-        if (this.animationTimer) clearInterval(this.animationTimer);
-        if (this.wrapper && this.wrapper.parentElement) {
-            this.wrapper.parentElement.removeChild(this.wrapper);
+        if (this.animationTimer) {
+            clearInterval(this.animationTimer);
+            this.animationTimer = null;
+        }
+        if (this.wrapper && this.wrapper.parentNode) {
+            this.wrapper.parentNode.removeChild(this.wrapper);
         }
     }
 }
 
-// Global Modal Controller for Organix Scan & Organize operations
-window.OrganixAntModal = {
-    modalEl: null,
-    progressBar: null,
-    
-    init() {
-        if (this.modalEl) return;
-        
-        this.modalEl = document.createElement('div');
-        this.modalEl.id = 'organixAntProgressModal';
-        this.modalEl.className = 'fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 animate-in fade-in duration-200 select-none';
-        this.modalEl.innerHTML = `
-            <div class="w-full max-w-lg bg-white dark:bg-[#1a1b22] border border-slate-200/90 dark:border-white/10 rounded-[32px] p-6 lg:p-7 shadow-2xl space-y-4">
-                <div id="antModalBarMount"></div>
-            </div>
-        `;
-        document.body.appendChild(this.modalEl);
-        
-        const mount = this.modalEl.querySelector('#antModalBarMount');
-        this.progressBar = new OrganixAntProgressBar({
-            container: mount,
-            antSize: 52,
-            fps: 10
-        });
-    },
-    
-    show(title = "Organix Engine Active", initialStatus = "Initializing files...") {
-        this.init();
-        this.progressBar.setTitle(title);
-        this.progressBar.setProgress(0, initialStatus);
-        this.modalEl.classList.remove('hidden');
-        this.modalEl.classList.add('flex');
-    },
-    
-    update(percent, statusMessage) {
-        if (!this.progressBar) this.init();
-        this.progressBar.setProgress(percent, statusMessage);
-    },
-    
-    hide(delay = 450) {
-        setTimeout(() => {
-            if (this.modalEl) {
-                this.modalEl.classList.add('hidden');
-                this.modalEl.classList.remove('flex');
-            }
-        }, delay);
-    }
-};
+// Attach globally
+window.OrganixAntProgressBar = OrganixAntProgressBar;

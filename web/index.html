@@ -124,12 +124,12 @@
                     <!-- Ants Stage Overlay -->
                     <div id="openerAntStage" class="absolute inset-x-0 top-0 h-14 pointer-events-none overflow-visible">
                         <img id="openerAntImg" src="/ant/1-ant.png" alt="Walking Ant" 
-                             class="absolute pointer-events-none select-none drop-shadow-xl transition-transform duration-100 ease-linear" 
-                             style="width: 48px; height: 48px; top: -10px; left: 0%; transform: translateX(-50%); object-fit: contain; z-index: 10;">
+                             class="absolute pointer-events-none select-none transition-transform duration-100 ease-linear" 
+                             style="width: 48px; height: 48px; top: -10px; left: 0%; transform: translateX(-78%); object-fit: contain; z-index: 10; filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));">
                     </div>
                     
-                    <!-- Track Bar Background -->
-                    <div class="relative w-full h-3 bg-white/15 rounded-full overflow-hidden border border-white/10 shadow-inner">
+                    <!-- Track Bar Background (White / Light Track for optimal contrast) -->
+                    <div class="relative w-full h-3.5 bg-white/90 rounded-full overflow-hidden border border-white/30 shadow-inner">
                         <!-- Glow Fill Behind the Ant -->
                         <div id="openerProgressBar" class="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 rounded-full transition-all duration-150 shadow-sm shadow-amber-500/30" style="width: 0%;"></div>
                     </div>
