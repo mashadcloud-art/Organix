@@ -1,0 +1,2606 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organix — Smart Desktop & File Organizer</title>
+    <link rel="icon" type="image/png" href="/app_icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        proTheme: {
+                            darkBg: '#18191c',
+                            darkWindow: '#222327',
+                            darkCard: '#2d2e34',
+                            darkCardHover: '#383940',
+                            lightBg: '#f2f3f7',
+                            lightWindow: '#ffffff',
+                            lightCard: '#ffffff',
+                            lightCardHover: '#f8f9fc',
+                            accent: '#0a84ff',
+                            accentHover: '#0071e3',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .dark .glass-window {
+            background: rgba(30, 31, 36, 0.96);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+        .dark .glass-card {
+            background: rgba(42, 44, 52, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+        .dark .glass-card:hover {
+            background: rgba(52, 55, 65, 0.9);
+        }
+
+        .glass-window {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+        .glass-card {
+            background: rgba(248, 249, 252, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+        .glass-card:hover {
+            background: rgba(238, 241, 248, 0.95);
+        }
+
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.25); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.4); }
+    </style>
+</head>
+<body class="w-screen h-screen overflow-hidden m-0 p-0 bg-slate-100 dark:bg-[#18191c] text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-200" onclick="handleGlobalClick(event)">
+    <!-- ============================================================= -->
+    <!-- CINEMATIC APP OPENER SPLASH OVERLAY                           -->
+    <!-- ============================================================= -->
+    <div id="appSplashOverlay" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl transition-all duration-700 select-none overflow-hidden">
+        <!-- Ambient Glowing Background Orbs -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/25 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-600/25 rounded-full blur-[100px] pointer-events-none animate-pulse" style="animation-delay: 1s;"></div>
+
+        <!-- Skip Intro Button -->
+        <button onclick="dismissAppOpener()" class="absolute top-6 right-6 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white border border-white/10 text-xs font-semibold backdrop-blur-md transition-all active:scale-95 flex items-center space-x-2 z-20 cursor-pointer shadow-lg">
+            <span>Skip Intro</span>
+            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        </button>
+
+        <!-- Main Video Container -->
+        <div class="relative w-full max-w-2xl px-6 flex flex-col items-center space-y-5 z-10 animate-in fade-in zoom-in-95 duration-500">
+            <!-- Video Frame with glowing border -->
+            <div class="relative w-full aspect-video rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(59,130,246,0.35)] border border-white/20 bg-slate-950 flex items-center justify-center group">
+                <video id="appOpenerVideo" class="w-full h-full object-cover" autoplay muted playsinline poster="/opener_poster.png" preload="auto">
+                    <source src="/opener_animation.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+
+                <!-- Subtle Overlay Gradient for Cinematic Feel -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+
+                <!-- Live Tag -->
+                <div class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-semibold text-white/90 flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
+                    <span>File Organizer Pro</span>
+                </div>
+            </div>
+
+            <!-- Branding & Status Bar below Video -->
+            <div class="w-full space-y-3 text-center">
+                <div class="flex items-center justify-center space-x-3">
+                    <img src="/app_icon.png" class="w-10 h-10 rounded-xl object-contain bg-amber-500/10 p-1 border border-amber-500/30 shadow-lg shadow-amber-500/30" alt="App Icon">
+                    <div class="text-left">
+                        <h1 class="text-lg font-bold tracking-tight text-white leading-tight">
+                            Organix <span class="text-amber-400">Pro</span>
+                        </h1>
+                        <p class="text-[11px] text-white/60">High-Performance File Organization &bull; Studio Edition</p>
+                    </div>
+                </div>
+
+                <!-- Animated Progress Bar -->
+                <div class="w-full max-w-md mx-auto space-y-1.5">
+                    <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden p-0.5 border border-white/5">
+                        <div id="openerProgressBar" class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full transition-all duration-150" style="width: 0%;"></div>
+                    </div>
+                    <div class="flex items-center justify-between text-[10px] text-white/50 font-mono px-1">
+                        <span id="openerStatusText">Loading smart file engine...</span>
+                        <span id="openerPercentText">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+            <!-- ============================================================= -->
+    <!-- PAGE 1: MAIN DASHBOARD HUB (COMPACT, SMART & MINIMAL)         -->
+    <!-- ============================================================= -->
+    <div id="viewMainDashboard" class="flex-1 flex flex-col w-full h-full overflow-hidden select-none bg-slate-100 dark:bg-[#18191c]">
+        <!-- Dashboard Top Navigation Bar -->
+        <header class="bg-white/90 dark:bg-[#202127]/90 border-b border-slate-200 dark:border-white/10 px-5 py-2.5 flex items-center justify-between select-none z-30 shrink-0 backdrop-blur-md gap-4">
+            <!-- Brand -->
+            <div class="flex items-center space-x-2.5">
+                <div class="flex items-center space-x-2 cursor-pointer group" onclick="playAppOpener(true)" title="Replay Opener">
+                    <img src="/app_icon.png" class="w-7 h-7 rounded-lg object-contain bg-amber-500/10 p-0.5 border border-amber-500/30 shadow-sm group-hover:scale-105 transition" alt="Organix">
+                    <div class="flex items-center space-x-1.5">
+                        <span class="font-bold text-sm tracking-tight text-slate-900 dark:text-white leading-none">Organix</span>
+                        <span class="px-1.5 py-0.2 bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[9px] font-mono font-bold rounded">PRO</span>
+                    </div>
+                </div>
+                <div class="hidden sm:flex items-center pl-2.5 border-l border-slate-200 dark:border-white/10">
+                    <span class="inline-flex items-center text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-1.5"></span>
+                        Hub Ready
+                    </span>
+                </div>
+            </div>
+
+            <!-- Smart Cool Minimal Tabs in Center of Dashboard -->
+            <div class="inline-flex p-1 bg-slate-200/70 dark:bg-black/40 rounded-xl border border-slate-300/40 dark:border-white/10 text-xs font-medium">
+                <button id="dashTabAll" onclick="filterDashboardLocations('all')" class="h-7 px-3.5 rounded-lg font-semibold transition bg-blue-600 text-white shadow-sm cursor-pointer">All</button>
+                <button id="dashTabDesktop" onclick="filterDashboardLocations('desktop')" class="h-7 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">Desktop</button>
+                <button id="dashTabDownloads" onclick="filterDashboardLocations('downloads')" class="h-7 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">Downloads</button>
+                <button id="dashTabDocuments" onclick="filterDashboardLocations('documents')" class="h-7 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">Documents</button>
+                <button id="dashTabDrives" onclick="filterDashboardLocations('drives')" class="h-7 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">Drives</button>
+            </div>
+
+            <!-- Right Toolbar: Auto-Update Pill, Theme, Settings -->
+            <div class="flex items-center space-x-1.5">
+                <button onclick="checkAppUpdate(true)" id="btnDashUpdate" class="h-7 px-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 cursor-pointer" title="Organix v1.2.0 • Click to check updates">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>v1.2.0</span>
+                </button>
+                <button onclick="loadDashboardSummary()" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-blue-500 cursor-pointer" title="Refresh Stats">
+                    <i class="fa-solid fa-rotate-right text-xs"></i>
+                </button>
+                <button onclick="playAppOpener(true)" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-purple-500 cursor-pointer" title="Replay Opener">
+                    <i class="fa-solid fa-play text-xs"></i>
+                </button>
+                <button onclick="toggleTheme()" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-amber-500 cursor-pointer" title="Toggle Theme">
+                    <i class="fa-solid fa-moon text-xs"></i>
+                </button>
+                <button onclick="toggleSettingsModal(true)" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-slate-600 dark:text-slate-300 cursor-pointer" title="Settings & Updates">
+                    <i class="fa-solid fa-gear text-xs"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Compact Dashboard Body -->
+        <main class="flex-1 p-5 space-y-4 overflow-y-auto w-full max-w-6xl mx-auto">
+            <!-- Compact Status Ribbon -->
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-white/70 dark:bg-[#202127]/70 border border-slate-200/80 dark:border-white/10 backdrop-blur-md shadow-sm flex-wrap gap-2">
+                <div class="flex items-center space-x-2 text-xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="font-semibold text-slate-800 dark:text-white">Active System Monitor:</span>
+                    <span id="dashStatusSubtitle" class="text-slate-500 dark:text-slate-400">All 5 locations monitored &bull; 1-click clean available</span>
+                </div>
+                <div class="flex items-center space-x-3 text-xs font-mono">
+                    <span class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-semibold" id="dashPillLoose">0 files waiting</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-semibold" id="dashPillSize">0 B</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-white/10 text-slate-600 dark:text-slate-300">Undo Supported</span>
+                </div>
+            </div>
+
+            <!-- Locations Cards Compact Grid -->
+            <div id="dashLocationsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Populated dynamically by renderDashboardLocations() -->
+            </div>
+        </main>
+
+        <!-- Compact Bottom Status Bar -->
+        <footer class="bg-white/80 dark:bg-black/30 border-t border-slate-200 dark:border-white/10 px-5 py-2 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 shrink-0 backdrop-blur-md">
+            <div class="flex items-center space-x-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Organix Live Engine &bull; Zero Loss Guarantee</span>
+            </div>
+            <div>Click <b>1-Click Clean</b> for instant auto-assort or <b>Open Studio</b> for file view</div>
+        </footer>
+    </div>
+
+
+    <!-- ============================================================= -->
+    <!-- PAGE 2: LOCATION STUDIO (ULTRA-CLEAN MINIMAL HEADER)          -->
+    <!-- ============================================================= -->
+    <div id="viewLocationStudio" class="hidden flex-1 flex flex-col w-full h-full overflow-hidden select-none">
+    <!-- Top Pro Header Bar -->
+    <header class="bg-white/90 dark:bg-[#202127]/90 border-b border-slate-200 dark:border-white/10 px-4 py-2.5 flex items-center justify-between select-none z-30 shrink-0 backdrop-blur-md gap-3">
+        <!-- Left: Hub Back Button + Brand + Minimal Location Selector -->
+        <div class="flex items-center space-x-2.5">
+            <button onclick="navigateToPage('dashboard')" class="h-8 px-2.5 rounded-xl bg-slate-200/70 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 cursor-pointer" title="Return to Dashboard">
+                <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                <span>Hub</span>
+            </button>
+
+            <div class="h-4 w-px bg-slate-300/60 dark:bg-white/10"></div>
+
+            <div class="flex items-center space-x-1.5 cursor-pointer" onclick="playAppOpener(true)" title="Organix">
+                <img src="/app_icon.png" class="w-6 h-6 rounded-lg object-contain bg-amber-500/10 p-0.5 border border-amber-500/20" alt="Organix">
+                <span class="font-bold text-sm tracking-tight text-slate-900 dark:text-white leading-none">Organix</span>
+                <span class="px-1 py-0.2 bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[8px] font-mono font-bold rounded">PRO</span>
+            </div>
+
+            <div class="h-4 w-px bg-slate-300/60 dark:bg-white/10"></div>
+
+            <!-- Sleek Minimal Location Selector (No bulky uppercase labels!) -->
+            <div class="relative">
+                <div class="flex items-center space-x-1.5 bg-slate-200/70 dark:bg-white/10 hover:bg-slate-300/80 dark:hover:bg-white/15 h-8 px-2.5 rounded-xl border border-slate-300/50 dark:border-white/10 cursor-pointer transition text-xs font-semibold text-slate-800 dark:text-slate-200" onclick="toggleLocationDropdown(event)">
+                    <i id="lblSelectedLocationIcon" class="fa-solid fa-desktop text-blue-500 text-xs"></i>
+                    <span id="lblSelectedLocationName">Desktop</span>
+                    <i class="fa-solid fa-chevron-down text-[8px] text-slate-400 ml-0.5"></i>
+                </div>
+
+                <!-- Dropdown Menu -->
+                <div id="locationDropdownMenu" class="hidden absolute top-full left-0 mt-1.5 w-60 bg-white dark:bg-[#25272e] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-1.5 z-50 text-xs">
+                    <div class="px-3 py-1.5 text-[10px] text-slate-400 uppercase font-semibold tracking-wider">Quick Locations</div>
+                    <div id="locationsListContainer" class="space-y-0.5 max-h-56 overflow-y-auto">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="border-t border-slate-200 dark:border-white/10 mt-1 pt-1">
+                        <button onclick="browseCustomLocation()" class="w-full text-left px-3 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-white/5 flex items-center space-x-2 text-blue-600 dark:text-blue-400 font-medium">
+                            <i class="fa-solid fa-folder-plus text-xs"></i>
+                            <span>Choose Custom Folder...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center: Smart Cool Minimal Tabs (Clean, Sleek & Compact) -->
+        <div class="inline-flex p-1 bg-slate-200/70 dark:bg-black/40 rounded-xl border border-slate-300/40 dark:border-white/10 text-xs font-medium">
+            <!-- 1. Files Tab -->
+            <button id="tabBtnDesktop" onclick="switchMainTab('desktop')" class="h-7 px-3 rounded-lg font-semibold transition flex items-center space-x-1.5 bg-blue-600 text-white shadow-sm cursor-pointer" title="View files">
+                <i class="fa-solid fa-layer-group text-[11px]"></i>
+                <span id="lblModeTabUnsorted">Files</span>
+                <span id="tabBadgeUnsorted" class="text-[10px] font-mono opacity-80">0</span>
+            </button>
+
+            <!-- 2. 1-Click Clean Tab -->
+            <button id="tabBtnOneClick" onclick="switchMainTab('oneclick')" class="h-7 px-3 rounded-lg font-medium transition flex items-center space-x-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer" title="Auto-assort in 1-click">
+                <i class="fa-solid fa-broom text-[11px] text-indigo-500"></i>
+                <span>1-Click Clean</span>
+            </button>
+
+            <!-- 3. Subfolders Tab -->
+            <button id="tabBtnSubfolders" onclick="switchMainTab('subfolders')" class="h-7 px-3 rounded-lg font-medium transition flex items-center space-x-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer" title="Subfolders">
+                <i class="fa-solid fa-folder-tree text-[11px] text-emerald-500"></i>
+                <span>Subfolders</span>
+                <span id="tabBadgeSubfolders" class="text-[10px] font-mono opacity-80">0</span>
+            </button>
+
+            <!-- 4. Assorted Tab -->
+            <button id="tabBtnAssorted" onclick="switchMainTab('assorted')" class="h-7 px-3 rounded-lg font-medium transition flex items-center space-x-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer" title="Assorted Files">
+                <i class="fa-solid fa-box-archive text-[11px] text-amber-500"></i>
+                <span>Assorted</span>
+                <span id="tabBadgeAssorted" class="text-[10px] font-mono opacity-80">0</span>
+            </button>
+        </div>
+
+        <!-- Right: Auto-Update Pill + Tools -->
+        <div class="flex items-center space-x-1.5">
+            <button onclick="checkAppUpdate(true)" id="btnHeaderUpdate" class="h-7 px-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 cursor-pointer" title="Organix v1.2.0 • Click to check updates">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>v1.2.0</span>
+            </button>
+            <button onclick="playAppOpener(true)" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-purple-500 cursor-pointer" title="Replay Opener">
+                <i class="fa-solid fa-play text-xs"></i>
+            </button>
+            <button onclick="triggerScan()" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-blue-500" title="Rescan Files">
+                <i class="fa-solid fa-rotate-right text-xs"></i>
+            </button>
+            <button onclick="triggerUndo()" id="btnUndo" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition opacity-40 cursor-not-allowed" title="Undo" disabled>
+                <i class="fa-solid fa-rotate-left text-xs"></i>
+            </button>
+            <button onclick="toggleTheme()" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-amber-500" title="Toggle Theme">
+                <i id="themeToggleIcon" class="fa-solid fa-moon text-xs"></i>
+            </button>
+            <button onclick="toggleSettingsModal(true)" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-slate-600 dark:text-slate-300" title="Settings & Updates">
+                <i class="fa-solid fa-gear text-xs"></i>
+            </button>
+        </div>
+    </header>
+
+
+    <!-- App Body Content Area -->
+    <main class="flex-1 p-5 md:p-6 space-y-4 overflow-y-auto w-full max-w-7xl mx-auto">
+
+        <!-- Dynamic Master Banner (Adapts between Location mode and Assorted Folder mode) -->
+        <div id="masterBanner" class="glass-card border border-slate-200 dark:border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md relative overflow-hidden">
+            <div id="bannerAccentBar" class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-blue-500 to-indigo-500"></div>
+            <div class="flex items-center space-x-4 pl-2">
+                <div id="bannerIconWrapper" class="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-500 dark:text-blue-400 text-xl shadow-inner">
+                    <i id="bannerIcon" class="fa-solid fa-folder-tree"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h2 id="bannerHeading" class="font-semibold text-slate-900 dark:text-white text-sm tracking-tight">Desktop Scan Complete</h2>
+                        <span id="bannerSizeBadge" class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-300 text-[11px] font-medium border border-blue-500/30 font-mono">0 B Ready</span>
+                    </div>
+                    <p id="bannerSubtext" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Scanning desktop for unsorted files...</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <button id="bannerActionBtn" onclick="organizeAll()" class="w-full sm:w-auto flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white font-medium px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-blue-600/30 active:scale-95">
+                    <i id="bannerActionIcon" class="fa-solid fa-broom"></i>
+                    <span id="bannerActionText">Organize All Files</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- VIEW 1: FILES LIST & TABLE VIEW                               -->
+        <!-- ============================================================= -->
+        <div id="viewFilesList" class="space-y-4">
+
+        <!-- 7 Category Cards Grid (Displays Location Unsorted or Assorted Folder counts) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3" id="categoryCardsGrid">
+            <!-- 1. Images -->
+            <div onclick="filterCategory('Images')" id="card-Images" class="glass-card border border-slate-200 dark:border-white/5 hover:border-pink-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
+                <div class="w-11 h-11 rounded-2xl bg-pink-500/15 text-pink-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-image"></i>
+                </div>
+                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Images</h3>
+                <span id="card-stat-Images" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+            </div>
+
+            <!-- 2. Videos -->
+            <div onclick="filterCategory('Videos')" id="card-Videos" class="glass-card border border-slate-200 dark:border-white/5 hover:border-purple-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
+                <div class="w-11 h-11 rounded-2xl bg-purple-500/15 text-purple-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-video"></i>
+                </div>
+                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Videos</h3>
+                <span id="card-stat-Videos" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+            </div>
+
+            <!-- 3. Documents -->
+            <div onclick="filterCategory('Documents')" id="card-Documents" class="glass-card border border-slate-200 dark:border-white/5 hover:border-blue-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
+                <div class="w-11 h-11 rounded-2xl bg-blue-500/15 text-blue-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-file-lines"></i>
+                </div>
+                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Documents</h3>
+                <span id="card-stat-Documents" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+            </div>
+
+            <!-- 4. Audio -->
+            <div onclick="filterCategory('Audio')" id="card-Audio" class="glass-card border border-slate-200 dark:border-white/5 hover:border-amber-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
+                <div class="w-11 h-11 rounded-2xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Audio</h3>
+                <span id="card-stat-Audio" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+            </div>
+
+            <!-- 5. Archives -->
+            <div onclick="filterCategory('Archives')" id="card-Archives" class="glass-card border border-slate-200 dark:border-white/5 hover:border-orange-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
+                <div class="w-11 h-11 rounded-2xl bg-orange-500/15 text-orange-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-file-zipper"></i>
+                </div>
+                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Archives</h3>
+                <span id="card-stat-Archives" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+            </div>
+
+            <!-- 6. Installers -->
+            <div onclick="filterCategory('Installers')" id="card-Installers" class="glass-card border border-slate-200 dark:border-white/5 hover:border-emerald-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
+                <div class="w-11 h-11 rounded-2xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-box-archive"></i>
+                </div>
+                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Installers</h3>
+                <span id="card-stat-Installers" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+            </div>
+
+            <!-- 7. Code -->
+            <div onclick="filterCategory('Code')" id="card-Code" class="glass-card border border-slate-200 dark:border-white/5 hover:border-blue-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Code</h3>
+                <span id="card-stat-Code" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+            </div>
+        </div>
+
+        <!-- Path Bar -->
+        <div class="glass-card border border-slate-200 dark:border-white/5 rounded-2xl p-3 flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+            <div class="flex items-center space-x-2 w-full md:w-auto flex-1">
+                <span id="lblPathType" class="font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider w-14 text-[10px]">Source:</span>
+                <div class="flex-1 bg-slate-200/50 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-xl px-3 py-1.5 text-slate-700 dark:text-slate-300 font-mono truncate flex items-center justify-between">
+                    <span id="lblActivePath" class="truncate">~/Desktop</span>
+                    <button id="btnChangePath" onclick="browseSourceFolder()" class="text-blue-500 dark:text-blue-400 hover:underline font-sans font-medium ml-2 shrink-0">Change</button>
+                </div>
+            </div>
+            
+            <button onclick="revealInFinder(encodeURIComponent(currentMainTab === 'desktop' ? currentSource : currentDest))" class="w-full md:w-auto flex items-center justify-center space-x-2 bg-slate-200/60 dark:bg-white/10 hover:bg-slate-300/80 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/5 px-4 py-1.5 rounded-xl font-medium transition shadow-sm active:scale-95 shrink-0">
+                <i class="fa-solid fa-folder-open text-amber-500"></i>
+                <span id="btnExploreFolderText">Reveal in Explorer</span>
+            </button>
+        </div>
+
+        <!-- Filter, Search, Sort & View Bar -->
+        <div class="space-y-2.5">
+            <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+                <!-- Search Box -->
+                <div class="relative flex-1">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search files, extensions or categories..." class="w-full bg-slate-200/50 dark:bg-black/30 border border-slate-200 dark:border-white/10 rounded-xl pl-9 pr-9 py-2 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+                    <span class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 dark:text-slate-500">
+                        <kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-white/10 rounded text-[9px] font-mono text-slate-600 dark:text-slate-300">⌘F</kbd>
+                    </span>
+                </div>
+
+                <!-- Sort & View Controls -->
+                <div class="flex items-center space-x-2 shrink-0">
+                    <!-- Sort Dropdown (Latest, Oldest, Largest, Smallest) -->
+                    <div class="relative flex items-center bg-slate-200/60 dark:bg-black/30 border border-slate-200 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-xs">
+                        <i class="fa-solid fa-arrow-down-short-wide text-slate-400 mr-2 text-[11px]"></i>
+                        <select id="sortSelect" onchange="handleSortChange()" class="bg-transparent text-slate-700 dark:text-slate-200 focus:outline-none text-xs font-medium cursor-pointer pr-1">
+                            <option value="latest" class="dark:bg-[#25272e]">Latest (Newest First)</option>
+                            <option value="oldest" class="dark:bg-[#25272e]">Oldest First</option>
+                            <option value="largest" class="dark:bg-[#25272e]">Largest Size First</option>
+                            <option value="smallest" class="dark:bg-[#25272e]">Smallest Size First</option>
+                            <option value="name_asc" class="dark:bg-[#25272e]">Name (A &rarr; Z)</option>
+                        </select>
+                    </div>
+
+                    <!-- Size Filter Dropdown -->
+                    <div class="relative flex items-center bg-slate-200/60 dark:bg-black/30 border border-slate-200 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-xs">
+                        <i class="fa-solid fa-weight-scale text-slate-400 mr-2 text-[11px]"></i>
+                        <select id="sizeFilterSelect" onchange="handleSizeFilterChange()" class="bg-transparent text-slate-700 dark:text-slate-200 focus:outline-none text-xs font-medium cursor-pointer pr-1">
+                            <option value="all" class="dark:bg-[#25272e]">All Sizes</option>
+                            <option value="large" class="dark:bg-[#25272e]">Large (&gt; 50 MB)</option>
+                            <option value="medium" class="dark:bg-[#25272e]">Medium (1 – 50 MB)</option>
+                            <option value="small" class="dark:bg-[#25272e]">Small (&lt; 1 MB)</option>
+                        </select>
+                    </div>
+
+                    <!-- View Switcher (List vs Thumbnails/Grid) -->
+                    <div class="inline-flex p-0.5 bg-slate-200/60 dark:bg-black/30 rounded-xl border border-slate-200 dark:border-white/10">
+                        <button onclick="setViewMode('list')" id="btnViewList" class="p-1.5 px-2.5 rounded-lg text-xs font-medium transition bg-white dark:bg-white/10 shadow-sm text-slate-900 dark:text-white" title="List View">
+                            <i class="fa-solid fa-list-ul"></i>
+                        </button>
+                        <button onclick="setViewMode('grid')" id="btnViewGrid" class="p-1.5 px-2.5 rounded-lg text-xs font-medium transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" title="Thumbnail / Grid View">
+                            <i class="fa-solid fa-grip"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Filter Pills & Sub-Documents Tabs -->
+            <div class="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">
+                <div class="flex items-center space-x-1.5 shrink-0" id="filterPillsContainer">
+                    <button onclick="filterCategory('ALL', this)" class="filter-tab px-3 py-1 rounded-xl text-xs font-medium bg-blue-600 border border-blue-500 text-white shadow-sm transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-asterisk text-[10px]"></i>
+                        <span>All</span>
+                    </button>
+                    <button onclick="filterCategory('Images', this)" class="filter-tab px-3 py-1 rounded-xl text-xs font-medium glass-card border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-image text-[10px] text-pink-500"></i>
+                        <span>Images</span>
+                    </button>
+                    <button onclick="filterCategory('Videos', this)" class="filter-tab px-3 py-1 rounded-xl text-xs font-medium glass-card border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-video text-[10px] text-purple-500"></i>
+                        <span>Videos</span>
+                    </button>
+                    <button onclick="filterCategory('Documents', this)" class="filter-tab px-3 py-1 rounded-xl text-xs font-medium glass-card border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-file-lines text-[10px] text-blue-500"></i>
+                        <span>Documents</span>
+                    </button>
+                    <button onclick="filterCategory('Installers', this)" class="filter-tab px-3 py-1 rounded-xl text-xs font-medium glass-card border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-box-archive text-[10px] text-emerald-500"></i>
+                        <span>Installers</span>
+                    </button>
+                    <button onclick="filterCategory('Code', this)" class="filter-tab px-3 py-1 rounded-xl text-xs font-medium glass-card border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-code text-[10px] text-indigo-500"></i>
+                        <span>Code</span>
+                    </button>
+                </div>
+
+                <!-- Sub-filters for Documents (PDF, Excel, Word, PPT) -->
+                <div id="docSubTabsContainer" class="hidden items-center space-x-1 shrink-0 bg-blue-500/10 dark:bg-blue-500/15 p-1 rounded-xl border border-blue-500/20 text-xs">
+                    <span class="text-[10px] font-semibold text-blue-600 dark:text-blue-300 px-2 uppercase">Docs:</span>
+                    <button onclick="setDocSubFilter('all')" id="docSub-all" class="px-2.5 py-0.5 rounded-lg font-medium text-xs bg-blue-600 text-white shadow-sm">All</button>
+                    <button onclick="setDocSubFilter('pdf')" id="docSub-pdf" class="px-2.5 py-0.5 rounded-lg font-medium text-xs text-slate-600 dark:text-slate-300 hover:text-blue-600">PDF</button>
+                    <button onclick="setDocSubFilter('word')" id="docSub-word" class="px-2.5 py-0.5 rounded-lg font-medium text-xs text-slate-600 dark:text-slate-300 hover:text-blue-600">Word/Text</button>
+                    <button onclick="setDocSubFilter('excel')" id="docSub-excel" class="px-2.5 py-0.5 rounded-lg font-medium text-xs text-slate-600 dark:text-slate-300 hover:text-blue-600">Excel</button>
+                    <button onclick="setDocSubFilter('ppt')" id="docSub-ppt" class="px-2.5 py-0.5 rounded-lg font-medium text-xs text-slate-600 dark:text-slate-300 hover:text-blue-600">PPT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breadcrumb when drilled into a folder in Assorted mode -->
+        <div id="assortedBreadcrumb" class="hidden items-center justify-between text-xs bg-slate-200/60 dark:bg-black/30 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/5">
+            <div class="flex items-center space-x-2">
+                <button onclick="drillIntoAssortedCategory(null)" class="text-blue-500 hover:underline flex items-center space-x-1.5 font-medium">
+                    <i class="fa-solid fa-folder-tree text-[11px] text-amber-500"></i>
+                    <span>Sorted Files</span>
+                </button>
+                <span class="text-slate-400">/</span>
+                <span id="breadcrumbCategoryName" class="font-semibold text-slate-900 dark:text-slate-100 flex items-center space-x-1.5"></span>
+            </div>
+            <button onclick="drillIntoAssortedCategory(null)" class="text-xs px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition font-medium shadow-sm flex items-center space-x-1">
+                <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                <span>Back to All Categories</span>
+            </button>
+        </div>
+
+        <!-- Main Content Area: Shows Unsorted Loose Files OR Assorted Folder Icons -->
+        <div class="glass-card border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg">
+            
+            <!-- Table Header Bar with Select All, Move Selected & Clean All in Section -->
+            <div class="px-4 py-2.5 border-b border-slate-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 bg-slate-200/50 dark:bg-black/20 text-xs">
+                
+                <!-- Left: Items counter & Select All Checkbox -->
+                <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-2">
+                        <i id="tableHeaderIcon" class="fa-solid fa-folder-tree text-blue-500 dark:text-blue-400"></i>
+                        <span id="filteredItemsCountHeader" class="font-medium text-slate-700 dark:text-slate-300">Desktop Loose Files (0 items)</span>
+                    </div>
+
+                    <!-- Select All Checkbox (Shown in Desktop Mode) -->
+                    <div id="selectionHeaderControls" class="flex items-center space-x-2 border-l border-slate-300 dark:border-white/15 pl-3">
+                        <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" class="w-4 h-4 accent-blue-600 rounded cursor-pointer">
+                        <label for="selectAllCheckbox" class="cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-200 select-none">
+                            Select All (<span id="lblSelectedCount" class="text-blue-600 dark:text-blue-400 font-bold">0</span>)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Right: Action Buttons (Move Selected, Clean Section, Open in Explorer) -->
+                <div class="flex items-center space-x-2">
+                    <!-- Move Selected Items Button -->
+                    <button id="btnMoveSelected" onclick="moveSelectedItems()" class="hidden bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-md items-center space-x-1.5 active:scale-95 transition">
+                        <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+                        <span>Move Selected (<span id="lblMoveSelectedBtnCount">0</span>)</span>
+                    </button>
+
+                    <!-- Clean & Move All in Current Section (Hero Action) -->
+                    <button id="btnCleanAllSection" onclick="organizeCurrentFiltered()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-4 py-1.5 rounded-xl text-xs font-semibold shadow-md flex items-center space-x-1.5 active:scale-95 transition">
+                        <i class="fa-solid fa-broom text-xs"></i>
+                        <span id="lblCleanSectionText">Clean & Move All (0)</span>
+                    </button>
+
+                    <!-- Open in Explorer Button (For Assorted View) -->
+                    <button onclick="openSortedFolderInExplorer()" id="btnOpenSortedFolder" class="hidden text-amber-600 dark:text-amber-400 hover:underline font-medium transition items-center space-x-1.5">
+                        <i class="fa-solid fa-folder-open text-xs"></i>
+                        <span>Open Sorted Files in Explorer</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Items List Container (Switches between List and Grid) -->
+            <div id="fileItemsList" class="divide-y divide-slate-200 dark:divide-white/5 max-h-[380px] overflow-y-auto">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        </div> <!-- /viewFilesList -->
+
+        <!-- ============================================================= -->
+        <!-- VIEW 2: 1-CLICK CLEAN & AUTO-ASSORT STUDIO                     -->
+        <!-- ============================================================= -->
+        <div id="viewOneClickClean" class="space-y-4 hidden">
+            <!-- Hero Auto-Assort Action Card -->
+            <div class="glass-card border border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-blue-500/10 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
+                    <div class="space-y-2 text-center lg:text-left">
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-xs font-semibold">
+                            <i class="fa-solid fa-bolt-lightning text-xs animate-bounce"></i>
+                            <span>Instant Auto-Assort Engine</span>
+                        </div>
+                        <h2 class="text-xl md:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                            One-Click Clean & Auto-Assort
+                        </h2>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 max-w-xl leading-relaxed">
+                            Click once to auto-assort all files in <span id="lblOneClickSrc" class="font-bold text-indigo-500">Downloads</span> into clean, designated category folders (<span class="font-semibold text-pink-500">Images</span>, <span class="font-semibold text-purple-500">Videos</span>, <span class="font-semibold text-blue-500">Documents</span>, <span class="font-semibold text-amber-500">Audio</span>, <span class="font-semibold text-emerald-500">Installers</span>, <span class="font-semibold text-cyan-500">Code</span>) inside <span id="lblOneClickDest" class="font-bold text-amber-500">Downloads Assorted</span>.
+                        </p>
+                    </div>
+
+                    <!-- Giant 1-Click Clean Button -->
+                    <div class="flex flex-col items-center gap-2 shrink-0">
+                        <button id="btnStartOneClickClean" onclick="executeOneClickClean()" class="px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 text-white font-bold rounded-2xl shadow-xl shadow-indigo-600/30 flex items-center space-x-3 active:scale-95 transition-all text-sm cursor-pointer group">
+                            <i class="fa-solid fa-broom text-lg group-hover:scale-110 transition duration-300"></i>
+                            <span id="btnStartOneClickText">Clean & Auto-Assort All Files Now</span>
+                            <span id="oneClickHeroBadge" class="ml-2 px-2.5 py-0.5 bg-white/20 rounded-full text-xs font-mono">0 Files</span>
+                        </button>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center space-x-1">
+                            <i class="fa-solid fa-shield-check text-emerald-500"></i>
+                            <span>100% Zero-Loss Guarantee &bull; 1-Click Undo Supported</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Clean Options Toolbar -->
+                <div class="mt-6 pt-4 border-t border-slate-200/60 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <label class="flex items-center space-x-2 cursor-pointer select-none">
+                            <input type="checkbox" id="chkOneClickCategoryFolders" checked class="w-4 h-4 accent-indigo-600 rounded">
+                            <span class="text-slate-700 dark:text-slate-200 font-medium">Assort into dedicated category folders</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer select-none">
+                            <input type="checkbox" id="chkOneClickIncludeSubfolders" class="w-4 h-4 accent-indigo-600 rounded">
+                            <span class="text-slate-700 dark:text-slate-200 font-medium">Also assort files inside subfolders</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer select-none">
+                            <input type="checkbox" id="chkOneClickCleanEmpty" checked class="w-4 h-4 accent-indigo-600 rounded">
+                            <span class="text-slate-700 dark:text-slate-200 font-medium">Remove empty leftover folders</span>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <button onclick="triggerScan()" class="text-xs text-indigo-500 dark:text-indigo-400 hover:underline font-semibold flex items-center space-x-1 cursor-pointer">
+                            <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
+                            <span>Refresh File Counts</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auto-Assort Route Cards Matrix -->
+            <div>
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        Auto-Assort Target Destinations
+                    </h3>
+                    <span id="oneClickTotalStatus" class="text-xs font-mono text-slate-500 dark:text-slate-400">
+                        0 B ready to organize
+                    </span>
+                </div>
+
+                <div id="oneClickRouteCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <!-- Populated dynamically: Images, Videos, Docs, Audio, Installers, Code, Archives, Other -->
+                </div>
+            </div>
+
+            <!-- Recent Clean Status Card (Shown after clean) -->
+            <div id="oneClickSuccessCard" class="hidden glass-card border border-emerald-500/30 bg-emerald-500/10 rounded-2xl p-5 shadow-lg flex items-center justify-between flex-wrap gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-lg shadow-md">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div>
+                        <h4 id="oneClickSuccessTitle" class="font-bold text-sm text-slate-900 dark:text-white">Auto-Assort Completed Successfully!</h4>
+                        <p id="oneClickSuccessSub" class="text-xs text-slate-600 dark:text-slate-300">All loose files have been organized into their respective folders.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="openSortedFolderInExplorer()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-md transition active:scale-95 flex items-center space-x-1.5 cursor-pointer">
+                        <i class="fa-solid fa-folder-open text-xs"></i>
+                        <span>Open Assorted Folder</span>
+                    </button>
+                    <button onclick="switchMainTab('assorted')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-slate-800 dark:text-white text-xs font-semibold rounded-xl border border-slate-300 dark:border-white/15 transition active:scale-95 flex items-center space-x-1.5 cursor-pointer">
+                        <i class="fa-solid fa-list-check text-xs"></i>
+                        <span>View Assorted Files</span>
+                    </button>
+                    <button onclick="triggerUndo()" class="px-4 py-2 bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-xl transition active:scale-95 flex items-center space-x-1.5 cursor-pointer">
+                        <i class="fa-solid fa-rotate-left text-xs"></i>
+                        <span>Undo Clean</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- VIEW 3: SUBFOLDERS MANAGER & ASSORTMENT STUDIO                -->
+        <!-- ============================================================= -->
+        <div id="viewSubfolders" class="space-y-4 hidden">
+            <!-- Subfolder Manager Master Bar -->
+            <div class="glass-card border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-blue-500/10 rounded-2xl p-5 shadow-xl">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-center lg:text-left">
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                            <i class="fa-solid fa-folder-tree text-xs"></i>
+                            <span>Subfolder Management & Assortment</span>
+                        </div>
+                        <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                            Subfolders in <span id="lblSubfolderLocationName">Downloads</span>
+                        </h2>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 max-w-xl">
+                            Subfolders can stay intact as they are (<span class="font-semibold text-emerald-500">&ldquo;Staying as it&rdquo;</span>) or you can assort their files into the designated category folders (<span class="font-semibold text-pink-500">Images</span>, <span class="font-semibold text-purple-500">Videos</span>, <span class="font-semibold text-blue-500">Documents</span>, etc.).
+                        </p>
+                    </div>
+
+                    <!-- Global Subfolder Action Buttons -->
+                    <div class="flex flex-wrap items-center justify-center gap-2 shrink-0">
+                        <!-- Assort All Subfolders Button -->
+                        <button onclick="assortAllSubfolders()" id="btnAssortAllSubfolders" class="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 text-xs flex items-center space-x-2 active:scale-95 transition cursor-pointer">
+                            <i class="fa-solid fa-arrows-split-up-and-left text-xs"></i>
+                            <span>Assort All Subfolders</span>
+                        </button>
+
+                        <!-- Move All Folders Intact to Assorted/Folders -->
+                        <button onclick="moveAllSubfoldersIntact()" id="btnMoveAllFoldersIntact" class="px-4 py-2.5 bg-slate-200/80 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-800 dark:text-white font-semibold rounded-xl border border-slate-300 dark:border-white/10 text-xs flex items-center space-x-2 active:scale-95 transition cursor-pointer">
+                            <i class="fa-solid fa-box-archive text-xs text-amber-500"></i>
+                            <span>Move All to Folders</span>
+                        </button>
+
+                        <!-- Keep All As-Is (Staying as it confirmation) -->
+                        <button onclick="markAllSubfoldersIntact()" class="px-4 py-2.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 dark:text-emerald-300 font-semibold rounded-xl border border-emerald-500/30 text-xs flex items-center space-x-2 active:scale-95 transition cursor-pointer">
+                            <i class="fa-solid fa-shield text-xs"></i>
+                            <span>Keep All As-Is</span>
+                        </button>
+
+                        <!-- Clean Empty Folders -->
+                        <button onclick="cleanEmptySubfolders()" class="px-3 py-2.5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 rounded-xl transition text-xs" title="Remove empty directories">
+                            <i class="fa-solid fa-broom text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Subfolder Search & Stats Bar -->
+                <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                    <div class="flex items-center space-x-3 w-full sm:w-auto">
+                        <span id="subfolderCountBadge" class="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">0 Subfolders</span>
+                        <span class="text-slate-400">&bull;</span>
+                        <span id="subfolderTotalSizeBadge" class="font-mono text-slate-500 dark:text-slate-400">0 B Total</span>
+                    </div>
+
+                    <!-- Subfolder Search Filter -->
+                    <div class="relative w-full sm:w-64">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        </span>
+                        <input type="text" id="subfolderSearchInput" oninput="filterSubfoldersList()" placeholder="Filter subfolders..." class="w-full bg-slate-200/50 dark:bg-black/30 border border-slate-200 dark:border-white/10 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subfolders Cards Container -->
+            <div id="subfoldersCardsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                <!-- Dynamically populated by renderSubfolders() -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Status Bar -->
+    <footer class="bg-white/80 dark:bg-black/30 border-t border-slate-200 dark:border-white/10 px-5 py-2 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 shrink-0 backdrop-blur-md">
+        <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="lblFooterSystemStatus">System Status: Ready</span>
+        </div>
+        <div id="lblFooterTheme">Intelligent Organizer Engine &bull; Zero Loss Guarantee &bull; Right-Click / Long-Press Supported</div>
+    </footer>
+    </div>
+
+    <!-- Modal: Settings (Preferences, Destination path, Rules) -->
+    <div id="settingsModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-md glass-window border border-slate-200 dark:border-white/20 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-4 border-b border-slate-200 dark:border-white/10 flex items-center justify-between bg-slate-200/50 dark:bg-black/30">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-gear text-blue-500"></i>
+                    <h3 class="font-semibold text-sm">Preferences & Settings</h3>
+                </div>
+                <button onclick="toggleSettingsModal(false)" class="w-7 h-7 rounded-lg hover:bg-slate-300 dark:hover:bg-white/10 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-5 text-xs">
+                <!-- Theme Selection -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="font-medium text-slate-800 dark:text-slate-200">Appearance Theme</h4>
+                        <p class="text-[11px] text-slate-400">Toggle between Light and Dark mode</p>
+                    </div>
+                    <div class="flex items-center space-x-1 bg-slate-200 dark:bg-black/40 p-1 rounded-xl border border-slate-300 dark:border-white/10">
+                        <button onclick="setTheme('light')" id="lightThemeBtn" class="px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-slate-600 dark:text-slate-400">
+                            <i class="fa-solid fa-sun text-amber-500"></i>
+                            <span>Light</span>
+                        </button>
+                        <button onclick="setTheme('dark')" id="darkThemeBtn" class="px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-slate-600 dark:text-slate-400">
+                            <i class="fa-solid fa-moon text-blue-400"></i>
+                            <span>Dark</span>
+                        </button>
+                    </div>
+                </div>
+
+                                <!-- Auto-Update & Version Section -->
+                <div class="border-t border-slate-200 dark:border-white/10 pt-4 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="flex items-center space-x-1.5">
+                                <h4 class="font-medium text-slate-800 dark:text-slate-200">Auto-Update</h4>
+                                <span class="px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-mono font-bold">STABLE</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">Keep Organix automatically updated to latest version</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="chkAutoUpdate" checked onchange="toggleAutoUpdateSetting(this.checked)" class="sr-only peer">
+                            <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-white/10 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/5">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-code-branch text-blue-500 text-xs"></i>
+                            <span class="text-[11px] font-mono text-slate-700 dark:text-slate-300">Installed: Organix v1.2.0 Pro</span>
+                        </div>
+                        <button onclick="checkAppUpdate(true)" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-semibold transition active:scale-95 shadow-sm cursor-pointer">
+                            Check Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Destination path -->
+                <div class="border-t border-slate-200 dark:border-white/10 pt-4">
+                    <h4 class="font-medium text-slate-800 dark:text-slate-200">Sorted Destination Folder</h4>
+                    <p class="text-[11px] text-slate-400 mb-2">Folder where categorized subfolders are placed</p>
+                    <div class="flex items-center space-x-2">
+                        <input type="text" id="settingDestInput" class="flex-1 bg-slate-200/50 dark:bg-black/30 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 font-mono" readonly>
+                        <button onclick="browseDestFolder()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium">Browse</button>
+                    </div>
+                </div>
+
+                <!-- Switches -->
+                <div class="border-t border-slate-200 dark:border-white/10 pt-4 space-y-3">
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <div>
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Include Sub-folders</span>
+                            <p class="text-[10px] text-slate-400">Scan nested folders</p>
+                        </div>
+                        <input type="checkbox" id="chkSubfolders" onchange="triggerScan()" class="w-4 h-4 accent-blue-600 rounded">
+                    </label>
+
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <div>
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Gather Loose Folders</span>
+                            <p class="text-[10px] text-slate-400">Move stray folders into 'Folders/'</p>
+                        </div>
+                        <input type="checkbox" id="chkGatherFolders" checked onchange="triggerScan()" class="w-4 h-4 accent-blue-600 rounded">
+                    </label>
+
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <div>
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Group by Year-Month</span>
+                            <p class="text-[10px] text-slate-400">Create date subfolders like 2026-10/</p>
+                        </div>
+                        <input type="checkbox" id="chkGroupByDate" onchange="triggerScan()" class="w-4 h-4 accent-blue-600 rounded">
+                    </label>
+                </div>
+
+                <!-- Rules Edit -->
+                <div class="border-t border-slate-200 dark:border-white/10 pt-4 flex items-center justify-between">
+                    <div>
+                        <h4 class="font-medium text-slate-800 dark:text-slate-200">Extension Rules (rules.json)</h4>
+                        <p class="text-[11px] text-slate-400">Customize categories & extensions</p>
+                    </div>
+                    <button onclick="openRulesFile()" class="px-3 py-1.5 bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-700 dark:text-slate-200 rounded-xl font-medium">Edit Rules</button>
+                </div>
+            </div>
+            <div class="p-3 border-t border-slate-200 dark:border-white/10 bg-slate-200/50 dark:bg-black/30 flex justify-end">
+                <button onclick="toggleSettingsModal(false)" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium shadow-sm transition">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pro Context Menu (Right Click & Long Press Hold) -->
+    <div id="contextMenu" class="hidden fixed z-50 glass-window bg-white/95 dark:bg-[#22242a]/95 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-1.5 min-w-[210px] text-xs backdrop-blur-xl select-none">
+        <div class="px-3 py-1.5 text-[10px] text-slate-400 font-mono truncate border-b border-slate-200 dark:border-white/10 mb-1" id="ctxItemName">Filename</div>
+        <button onclick="ctxMoveItem()" id="ctxBtnMove" class="w-full text-left px-3 py-2 rounded-xl hover:bg-blue-600 hover:text-white flex items-center space-x-2 text-slate-800 dark:text-slate-100 font-medium transition group">
+            <i class="fa-solid fa-arrow-right-to-bracket text-xs text-blue-500 group-hover:text-white"></i>
+            <span id="ctxMoveText">Move to Assorted Folder</span>
+        </button>
+        <button onclick="ctxOpenFile()" class="w-full text-left px-3 py-2 rounded-xl hover:bg-blue-600 hover:text-white flex items-center space-x-2 text-slate-800 dark:text-slate-100 font-medium transition group">
+            <i class="fa-solid fa-play text-xs text-emerald-500 group-hover:text-white"></i>
+            <span>Open File</span>
+        </button>
+        <button onclick="ctxRevealExplorer()" class="w-full text-left px-3 py-2 rounded-xl hover:bg-blue-600 hover:text-white flex items-center space-x-2 text-slate-800 dark:text-slate-100 font-medium transition group">
+            <i class="fa-solid fa-folder-open text-xs text-amber-500 group-hover:text-white"></i>
+            <span>Reveal in File Explorer</span>
+        </button>
+        <div class="border-t border-slate-200 dark:border-white/10 my-1"></div>
+        <button onclick="ctxToggleSelect()" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 flex items-center space-x-2 text-slate-700 dark:text-slate-300 font-medium transition">
+            <i class="fa-regular fa-square-check text-xs text-indigo-500"></i>
+            <span id="ctxToggleSelectText">Select Item</span>
+        </button>
+        <button onclick="ctxCopyPath()" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 flex items-center space-x-2 text-slate-700 dark:text-slate-300 font-medium transition">
+            <i class="fa-regular fa-copy text-xs text-slate-400"></i>
+            <span>Copy File Path</span>
+        </button>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 glass-window border border-slate-200 dark:border-white/20 text-slate-800 dark:text-slate-100 px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 text-xs">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-500 dark:text-emerald-400 text-base"></i>
+        <span id="toast-message">Action completed successfully</span>
+    </div>
+
+    <!-- Application Controller Logic -->
+    <script>
+        // State
+        let allPlan = [];
+        let assortedFiles = [];
+        let availableLocations = [];
+        let activeFilter = 'ALL';
+        let activeDocSubFilter = 'all'; // 'all', 'pdf', 'word', 'excel', 'ppt'
+        let currentSort = 'latest'; // 'latest', 'oldest', 'largest', 'smallest', 'name_asc'
+        let currentSizeFilter = 'all'; // 'all', 'large', 'medium', 'small'
+        let viewMode = 'grid'; // default to thumbnail grid as user likes it
+        let currentSource = '';
+        let currentDest = '';
+        let currentLocationId = 'desktop';
+        let currentLocationName = 'Desktop';
+        let currentMainTab = 'desktop'; // 'desktop' | 'oneclick' | 'subfolders' | 'assorted'
+        let currentSubfolders = [];
+        let currentAssortedCategory = null;
+        let desktopScanSummary = {};
+
+        // Selection & Context Menu state
+        let selectedFilePaths = new Set();
+        let currentContextItem = null;
+        let isContextAssorted = false;
+        let longPressTimer = null;
+
+        const ICON_MAP = {
+            'Images': 'fa-solid fa-image text-pink-500',
+            'Videos': 'fa-solid fa-video text-purple-500',
+            'Documents': 'fa-solid fa-file-lines text-blue-500',
+            'PDF': 'fa-solid fa-file-pdf text-red-500',
+            'Spreadsheets': 'fa-solid fa-file-excel text-emerald-500',
+            'Presentations': 'fa-solid fa-file-powerpoint text-amber-500',
+            'Audio': 'fa-solid fa-music text-amber-500',
+            'Archives': 'fa-solid fa-file-zipper text-orange-500',
+            'Installers': 'fa-solid fa-box-archive text-emerald-500',
+            'Code': 'fa-solid fa-code text-indigo-500',
+            'Folders': 'fa-solid fa-folder text-cyan-500',
+            'Other': 'fa-solid fa-file text-slate-400'
+        };
+
+        const FOLDER_THEME_MAP = {
+            'Images': { color: 'text-pink-500', bg: 'bg-pink-500/15', border: 'border-pink-500/30', badge: 'bg-pink-500/20 text-pink-600 dark:text-pink-400' },
+            'Videos': { color: 'text-purple-500', bg: 'bg-purple-500/15', border: 'border-purple-500/30', badge: 'bg-purple-500/20 text-purple-600 dark:text-purple-400' },
+            'Documents': { color: 'text-blue-500', bg: 'bg-blue-500/15', border: 'border-blue-500/30', badge: 'bg-blue-500/20 text-blue-600 dark:text-blue-400' },
+            'PDF': { color: 'text-red-500', bg: 'bg-red-500/15', border: 'border-red-500/30', badge: 'bg-red-500/20 text-red-600 dark:text-red-400' },
+            'Spreadsheets': { color: 'text-emerald-500', bg: 'bg-emerald-500/15', border: 'border-emerald-500/30', badge: 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' },
+            'Presentations': { color: 'text-amber-500', bg: 'bg-amber-500/15', border: 'border-amber-500/30', badge: 'bg-amber-500/20 text-amber-600 dark:text-amber-400' },
+            'Audio': { color: 'text-amber-500', bg: 'bg-amber-500/15', border: 'border-amber-500/30', badge: 'bg-amber-500/20 text-amber-600 dark:text-amber-400' },
+            'Archives': { color: 'text-orange-500', bg: 'bg-orange-500/15', border: 'border-orange-500/30', badge: 'bg-orange-500/20 text-orange-600 dark:text-orange-400' },
+            'Installers': { color: 'text-emerald-500', bg: 'bg-emerald-500/15', border: 'border-emerald-500/30', badge: 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' },
+            'Code': { color: 'text-indigo-500', bg: 'bg-indigo-500/15', border: 'border-indigo-500/30', badge: 'bg-indigo-500/20 text-indigo-600 dark:text-indigo-400' },
+            'Folders': { color: 'text-cyan-500', bg: 'bg-cyan-500/15', border: 'border-cyan-500/30', badge: 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400' },
+            'Shortcuts': { color: 'text-violet-500', bg: 'bg-violet-500/15', border: 'border-violet-500/30', badge: 'bg-violet-500/20 text-violet-600 dark:text-violet-400' },
+            'Other': { color: 'text-slate-400', bg: 'bg-slate-500/15', border: 'border-slate-500/30', badge: 'bg-slate-500/20 text-slate-600 dark:text-slate-400' }
+        };
+
+        const GROUPINGS = {
+            'Documents': ['Documents', 'PDF', 'Spreadsheets', 'Presentations'],
+            'Images': ['Images'],
+            'Videos': ['Videos'],
+            'Audio': ['Audio'],
+            'Archives': ['Archives'],
+            'Installers': ['Installers'],
+            'Code': ['Code']
+        };
+
+        // Initialize App on DOM Ready
+        window.addEventListener('DOMContentLoaded', async () => {
+            initTheme();
+            await fetchLocations();
+            await fetchState();
+            await loadDashboardSummary();
+            await triggerScan();
+            await loadAssortedFiles();
+        });
+
+        async function fetchLocations() {
+            try {
+                const res = await fetch('/api/locations');
+                const data = await res.json();
+                availableLocations = data.locations || [];
+                renderLocationsDropdown();
+            } catch (err) {
+                console.error("Error fetching locations:", err);
+            }
+        }
+
+        function renderLocationsDropdown() {
+            const list = document.getElementById('locationsListContainer');
+            list.innerHTML = availableLocations.map(loc => `
+                <div onclick="selectLocation('${loc.id}')" class="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer flex items-center justify-between ${loc.id === currentLocationId ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold' : 'text-slate-700 dark:text-slate-300'}">
+                    <div class="flex items-center space-x-2.5">
+                        <i class="${loc.icon || 'fa-solid fa-folder'} text-xs text-blue-500"></i>
+                        <span>${loc.name}</span>
+                    </div>
+                    <span class="text-[9px] text-slate-400 font-mono">${loc.dest_name}</span>
+                </div>
+            `).join('');
+        }
+
+        function toggleLocationDropdown(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('locationDropdownMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function handleGlobalClick(e) {
+            // Close location dropdown if outside
+            const menu = document.getElementById('locationDropdownMenu');
+            if (menu && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+
+            // Close context menu if clicked outside
+            hideContextMenu();
+        }
+
+        async function selectLocation(locId) {
+            const loc = availableLocations.find(l => l.id === locId);
+            if (!loc) return;
+            currentLocationId = loc.id;
+            currentLocationName = loc.name;
+            currentSource = loc.path;
+            currentDest = `${loc.path}\\${loc.dest_name}`;
+
+            document.getElementById('lblSelectedLocationName').innerText = loc.name;
+            document.getElementById('lblSelectedLocationIcon').className = `${loc.icon || 'fa-solid fa-folder'} text-blue-500 text-xs`;
+            document.getElementById('lblModeTabUnsorted').innerText = 'Files';
+
+            document.getElementById('locationDropdownMenu').classList.add('hidden');
+            renderLocationsDropdown();
+            updatePathDisplay();
+
+            selectedFilePaths.clear();
+            updateSelectionUI();
+
+            await triggerScan();
+            await loadAssortedFiles();
+            showToast(`Location set to ${loc.name}`);
+        }
+
+        async function browseCustomLocation() {
+            document.getElementById('locationDropdownMenu').classList.add('hidden');
+            try {
+                const res = await fetch('/api/browse?type=source');
+                const data = await res.json();
+                if (data.path) {
+                    const folderName = data.path.split('\\').pop() || 'Custom';
+                    const customLoc = {
+                        id: 'custom_' + Date.now(),
+                        name: folderName,
+                        path: data.path,
+                        dest_name: `${folderName} Assorted`,
+                        icon: 'fa-solid fa-folder'
+                    };
+                    availableLocations.push(customLoc);
+                    selectLocation(customLoc.id);
+                }
+            } catch (err) {}
+        }
+
+        async function fetchState() {
+            try {
+                const res = await fetch('/api/state');
+                const data = await res.json();
+                currentSource = data.source;
+                currentDest = data.destination;
+                updatePathDisplay();
+                document.getElementById('settingDestInput').value = currentDest;
+                updateUndoButton(data.undo_available);
+            } catch (err) {
+                showToast('Failed to connect to local organizer backend', 'error');
+            }
+        }
+
+        function updatePathDisplay() {
+            if (currentMainTab === 'desktop') {
+                document.getElementById('lblPathType').innerText = 'Source:';
+                document.getElementById('lblActivePath').innerText = currentSource;
+                document.getElementById('btnChangePath').style.display = 'inline';
+                document.getElementById('btnExploreFolderText').innerText = `Open ${currentLocationName}`;
+            } else {
+                document.getElementById('lblPathType').innerText = 'Sorted:';
+                document.getElementById('lblActivePath').innerText = currentDest;
+                document.getElementById('btnChangePath').style.display = 'none';
+                document.getElementById('btnExploreFolderText').innerText = 'Open Sorted Files';
+            }
+        }
+
+        async function triggerScan() {
+            showToast(`Scanning ${currentLocationName} for loose files...`);
+            const params = new URLSearchParams({
+                source: currentSource,
+                dest: currentDest,
+                subfolders: document.getElementById('chkSubfolders').checked,
+                gather_folders: document.getElementById('chkGatherFolders').checked,
+                group_date: document.getElementById('chkGroupByDate').checked
+            });
+
+            try {
+                const res = await fetch(`/api/scan?${params}`);
+                const data = await res.json();
+                allPlan = data.plan || [];
+                desktopScanSummary = data.summary || {};
+                updateUndoButton(data.undo_available);
+
+                document.getElementById('tabBadgeUnsorted').innerText = allPlan.length;
+
+                await loadSubfolders();
+                const badgeOneClick = document.getElementById('tabBadgeOneClick');
+                if (badgeOneClick) badgeOneClick.innerText = allPlan.length;
+
+                if (currentMainTab === 'desktop') {
+                    applyDesktopBanner(data.total_size_human);
+                    updateCategoryCards(desktopScanSummary);
+                    renderFileList();
+                } else if (currentMainTab === 'oneclick') {
+                    applyOneClickBanner();
+                    renderOneClickClean();
+                } else if (currentMainTab === 'subfolders') {
+                    applySubfoldersBanner();
+                    renderSubfolders();
+                }
+
+                document.getElementById('lblFooterSystemStatus').innerHTML = `System Status: Ready &bull; ${allPlan.length} loose items in ${currentLocationName}`;
+            } catch (err) {
+                showToast('Scan error: ' + err.message, 'error');
+            }
+        }
+
+        // =========================================================================
+        // MODE SWITCHER (Files List vs 1-Click Clean vs Subfolders vs Assorted Folder)
+        // =========================================================================
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function switchMainTab(tab) {
+            currentMainTab = tab;
+            const btnDesktop = document.getElementById('tabBtnDesktop');
+            const btnOneClick = document.getElementById('tabBtnOneClick');
+            const btnSubfolders = document.getElementById('tabBtnSubfolders');
+            const btnAssorted = document.getElementById('tabBtnAssorted');
+
+            const viewFilesList = document.getElementById('viewFilesList');
+            const viewOneClickClean = document.getElementById('viewOneClickClean');
+            const viewSubfolders = document.getElementById('viewSubfolders');
+
+            const btnOpenSortedFolder = document.getElementById('btnOpenSortedFolder');
+            const btnCleanAllSection = document.getElementById('btnCleanAllSection');
+            const selectionHeaderControls = document.getElementById('selectionHeaderControls');
+            const breadcrumb = document.getElementById('assortedBreadcrumb');
+            const searchInput = document.getElementById('searchInput');
+
+            const inactiveClass = "px-3.5 py-1.5 rounded-xl font-semibold transition flex items-center space-x-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer";
+            btnDesktop.className = inactiveClass;
+            if (btnOneClick) btnOneClick.className = inactiveClass;
+            if (btnSubfolders) btnSubfolders.className = inactiveClass;
+            btnAssorted.className = inactiveClass;
+
+            if (viewFilesList) viewFilesList.classList.add('hidden');
+            if (viewOneClickClean) viewOneClickClean.classList.add('hidden');
+            if (viewSubfolders) viewSubfolders.classList.add('hidden');
+
+            if (searchInput) searchInput.value = '';
+            updatePathDisplay();
+            selectedFilePaths.clear();
+
+            if (tab === 'desktop') {
+                btnDesktop.className = "px-3.5 py-1.5 rounded-xl font-semibold transition flex items-center space-x-1.5 bg-blue-600 text-white shadow-md cursor-pointer";
+                if (viewFilesList) viewFilesList.classList.remove('hidden');
+                if (btnOpenSortedFolder) {
+                    btnOpenSortedFolder.classList.add('hidden');
+                    btnOpenSortedFolder.classList.remove('flex');
+                }
+                if (btnCleanAllSection) btnCleanAllSection.style.display = 'flex';
+                if (selectionHeaderControls) selectionHeaderControls.style.display = 'flex';
+                if (breadcrumb) {
+                    breadcrumb.classList.add('hidden');
+                    breadcrumb.classList.remove('flex');
+                }
+
+                applyDesktopBanner();
+                updateCategoryCards(desktopScanSummary);
+                updateSelectionUI();
+                renderFileList();
+                showToast(`Switched to ${currentLocationName} Files List`);
+            } else if (tab === 'oneclick') {
+                if (btnOneClick) btnOneClick.className = "px-3.5 py-1.5 rounded-xl font-semibold transition flex items-center space-x-1.5 bg-indigo-600 text-white shadow-md shadow-indigo-600/30 cursor-pointer";
+                if (viewOneClickClean) viewOneClickClean.classList.remove('hidden');
+                applyOneClickBanner();
+                renderOneClickClean();
+                showToast('Switched to 1-Click Clean Mode');
+            } else if (tab === 'subfolders') {
+                if (btnSubfolders) btnSubfolders.className = "px-3.5 py-1.5 rounded-xl font-semibold transition flex items-center space-x-1.5 bg-emerald-600 text-white shadow-md shadow-emerald-600/30 cursor-pointer";
+                if (viewSubfolders) viewSubfolders.classList.remove('hidden');
+                applySubfoldersBanner();
+                renderSubfolders();
+                showToast('Switched to Subfolders Mode');
+            } else {
+                btnAssorted.className = "px-3.5 py-1.5 rounded-xl font-semibold transition flex items-center space-x-1.5 bg-amber-500 text-white shadow-md cursor-pointer";
+                if (viewFilesList) viewFilesList.classList.remove('hidden');
+                if (btnOpenSortedFolder) {
+                    btnOpenSortedFolder.classList.remove('hidden');
+                    btnOpenSortedFolder.classList.add('flex');
+                }
+                if (btnCleanAllSection) btnCleanAllSection.style.display = 'none';
+                if (selectionHeaderControls) selectionHeaderControls.style.display = 'none';
+
+                applyAssortedBanner();
+                currentAssortedCategory = null;
+                updateAssortedCategoryCards();
+                updateSelectionUI();
+                renderAssortedInTable();
+                showToast('Switched to Assorted Folder Library');
+            }
+        }
+
+        function applyDesktopBanner(sizeHuman = null) {
+            document.getElementById('bannerAccentBar').className = "absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-blue-500 to-indigo-500";
+            document.getElementById('bannerIconWrapper').className = "w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-500 dark:text-blue-400 text-xl shadow-inner";
+            document.getElementById('bannerIcon').className = "fa-solid fa-folder-tree";
+            document.getElementById('bannerHeading').innerText = `${currentLocationName} Scan Complete`;
+            document.getElementById('bannerSubtext').innerText = `${allPlan.length} unsorted files detected in ${currentLocationName} ready for instant organization.`;
+            document.getElementById('bannerActionBtn').className = "w-full sm:w-auto flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white font-medium px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-blue-600/30 active:scale-95";
+            document.getElementById('bannerActionBtn').onclick = organizeAll;
+            document.getElementById('bannerActionIcon').className = "fa-solid fa-broom";
+            document.getElementById('bannerActionText').innerText = "Organize All Files";
+
+            const totalSize = allPlan.reduce((acc, it) => acc + (it.size || 0), 0);
+            document.getElementById('bannerSizeBadge').innerText = sizeHuman || formatBytes(totalSize) + ' Ready';
+        }
+
+        function applyOneClickBanner() {
+            document.getElementById('bannerAccentBar').className = "absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500";
+            document.getElementById('bannerIconWrapper').className = "w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-500 dark:text-indigo-400 text-xl shadow-inner";
+            document.getElementById('bannerIcon').className = "fa-solid fa-bolt-lightning";
+            document.getElementById('bannerHeading').innerText = `1-Click Auto-Clean Studio (${currentLocationName})`;
+            document.getElementById('bannerSubtext').innerText = `${allPlan.length} unsorted files detected. 1 click to auto-assort into organized folders.`;
+            document.getElementById('bannerActionBtn').className = "w-full sm:w-auto flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 text-white font-medium px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30 active:scale-95";
+            document.getElementById('bannerActionBtn').onclick = executeOneClickClean;
+            document.getElementById('bannerActionIcon').className = "fa-solid fa-bolt-lightning";
+            document.getElementById('bannerActionText').innerText = "Run 1-Click Clean";
+
+            const totalSize = allPlan.reduce((acc, it) => acc + (it.size || 0), 0);
+            document.getElementById('bannerSizeBadge').innerText = formatBytes(totalSize) + ' Ready';
+        }
+
+        function applySubfoldersBanner() {
+            document.getElementById('bannerAccentBar').className = "absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-emerald-500 to-teal-500";
+            document.getElementById('bannerIconWrapper').className = "w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400 text-xl shadow-inner";
+            document.getElementById('bannerIcon').className = "fa-solid fa-folder-tree";
+            document.getElementById('bannerHeading').innerText = `Subfolders in ${currentLocationName}`;
+            document.getElementById('bannerSubtext').innerText = `${currentSubfolders.length} subfolders detected. Keep intact or assort into designated folders.`;
+            document.getElementById('bannerActionBtn').className = "w-full sm:w-auto flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-medium px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/30 active:scale-95";
+            document.getElementById('bannerActionBtn').onclick = assortAllSubfolders;
+            document.getElementById('bannerActionIcon').className = "fa-solid fa-broom";
+            document.getElementById('bannerActionText').innerText = "Assort All Subfolders";
+
+            const totalSize = currentSubfolders.reduce((acc, it) => acc + (it.size || 0), 0);
+            document.getElementById('bannerSizeBadge').innerText = formatBytes(totalSize) + ' in Folders';
+        }
+
+        function applyAssortedBanner() {
+            document.getElementById('bannerAccentBar').className = "absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-amber-500 to-orange-500";
+            document.getElementById('bannerIconWrapper').className = "w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 dark:text-amber-400 text-xl shadow-inner";
+            document.getElementById('bannerIcon').className = "fa-solid fa-box-archive";
+            document.getElementById('bannerHeading').innerText = "Assorted Folder Library";
+            document.getElementById('bannerSubtext').innerText = `${assortedFiles.length} organized files categorized inside ${currentDest}`;
+            document.getElementById('bannerActionBtn').className = "w-full sm:w-auto flex items-center justify-center space-x-2 bg-amber-500 hover:bg-amber-400 text-white font-medium px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-amber-500/30 active:scale-95";
+            document.getElementById('bannerActionBtn').onclick = openSortedFolderInExplorer;
+            document.getElementById('bannerActionIcon').className = "fa-solid fa-folder-open";
+            document.getElementById('bannerActionText').innerText = "Open Folder in Explorer";
+
+            const totalSize = assortedFiles.reduce((acc, it) => acc + (it.size || 0), 0);
+            document.getElementById('bannerSizeBadge').innerText = formatBytes(totalSize) + ' Sorted';
+        }
+
+        function updateCategoryCards(summary) {
+            const categories = ['Images', 'Videos', 'Documents', 'Audio', 'Archives', 'Installers', 'Code'];
+            categories.forEach(cat => {
+                let count = 0;
+                let bytes = 0;
+                const targets = GROUPINGS[cat] || [cat];
+                targets.forEach(t => {
+                    if (summary && summary[t]) {
+                        count += summary[t].count;
+                        bytes += summary[t].bytes;
+                    }
+                });
+                const statElem = document.getElementById(`card-stat-${cat}`);
+                if (statElem) {
+                    statElem.innerHTML = `${formatBytes(bytes)} &bull; ${count}`;
+                }
+            });
+        }
+
+        function updateAssortedCategoryCards() {
+            const categories = ['Images', 'Videos', 'Documents', 'Audio', 'Archives', 'Installers', 'Code'];
+            categories.forEach(cat => {
+                let count = 0;
+                let bytes = 0;
+                const targets = GROUPINGS[cat] || [cat];
+                assortedFiles.forEach(f => {
+                    if (targets.includes(f.category)) {
+                        count += 1;
+                        bytes += (f.size || 0);
+                    }
+                });
+                const statElem = document.getElementById(`card-stat-${cat}`);
+                if (statElem) {
+                    statElem.innerHTML = `${formatBytes(bytes)} &bull; ${count}`;
+                }
+            });
+        }
+
+        function filterCategory(category, button = null) {
+            activeFilter = category;
+            
+            // Show/Hide Document Sub-tabs if Documents is active
+            const docSub = document.getElementById('docSubTabsContainer');
+            if (category === 'Documents') {
+                docSub.classList.remove('hidden');
+                docSub.classList.add('flex');
+            } else {
+                docSub.classList.add('hidden');
+                docSub.classList.remove('flex');
+                activeDocSubFilter = 'all';
+            }
+
+            // Highlight category card
+            document.querySelectorAll('#categoryCardsGrid > div').forEach(card => {
+                if (card.id === `card-${category}`) {
+                    card.className = "glass-card border border-blue-500/80 bg-blue-500/10 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-md shadow-blue-500/10";
+                } else {
+                    card.className = "glass-card border border-slate-200 dark:border-white/5 hover:border-blue-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm";
+                }
+            });
+
+            // Highlight pill if clicked
+            if (button) {
+                document.querySelectorAll('.filter-tab').forEach(t => {
+                    t.className = "filter-tab px-3 py-1 rounded-xl text-xs font-medium glass-card border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center space-x-2 whitespace-nowrap";
+                });
+                button.className = "filter-tab px-3 py-1 rounded-xl text-xs font-medium bg-blue-600 border border-blue-500 text-white shadow-sm transition flex items-center space-x-2 whitespace-nowrap";
+            }
+
+            if (currentMainTab === 'assorted') {
+                if (category === 'ALL') {
+                    drillIntoAssortedCategory(null);
+                } else {
+                    drillIntoAssortedCategory(category);
+                }
+            } else {
+                renderFileList();
+                showToast('Filtered: ' + category);
+            }
+        }
+
+        function setDocSubFilter(sub) {
+            activeDocSubFilter = sub;
+            ['all', 'pdf', 'word', 'excel', 'ppt'].forEach(s => {
+                const btn = document.getElementById(`docSub-${s}`);
+                if (!btn) return;
+                if (s === sub) {
+                    btn.className = "px-2.5 py-0.5 rounded-lg font-medium text-xs bg-blue-600 text-white shadow-sm";
+                } else {
+                    btn.className = "px-2.5 py-0.5 rounded-lg font-medium text-xs text-slate-600 dark:text-slate-300 hover:text-blue-600";
+                }
+            });
+
+            if (currentMainTab === 'desktop') {
+                renderFileList();
+            } else {
+                renderAssortedInTable();
+            }
+        }
+
+        function handleSortChange() {
+            currentSort = document.getElementById('sortSelect').value;
+            if (currentMainTab === 'desktop') {
+                renderFileList();
+            } else {
+                renderAssortedInTable();
+            }
+        }
+
+        function handleSizeFilterChange() {
+            currentSizeFilter = document.getElementById('sizeFilterSelect').value;
+            if (currentMainTab === 'desktop') {
+                renderFileList();
+            } else {
+                renderAssortedInTable();
+            }
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            const btnList = document.getElementById('btnViewList');
+            const btnGrid = document.getElementById('btnViewGrid');
+            if (mode === 'list') {
+                btnList.className = "p-1.5 px-2.5 rounded-lg text-xs font-medium transition bg-white dark:bg-white/10 shadow-sm text-slate-900 dark:text-white";
+                btnGrid.className = "p-1.5 px-2.5 rounded-lg text-xs font-medium transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            } else {
+                btnGrid.className = "p-1.5 px-2.5 rounded-lg text-xs font-medium transition bg-white dark:bg-white/10 shadow-sm text-slate-900 dark:text-white";
+                btnList.className = "p-1.5 px-2.5 rounded-lg text-xs font-medium transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            }
+
+            if (currentMainTab === 'desktop') {
+                renderFileList();
+            } else {
+                renderAssortedInTable();
+            }
+        }
+
+        function handleSearch() {
+            if (currentMainTab === 'desktop') {
+                renderFileList();
+            } else {
+                renderAssortedInTable();
+            }
+        }
+
+        function sortAndFilterArray(items) {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            let filtered = items.filter(item => {
+                // Category Filter
+                if (activeFilter !== 'ALL') {
+                    const targets = GROUPINGS[activeFilter] || [activeFilter];
+                    if (!targets.includes(item.category)) return false;
+                }
+
+                // Sub-Document Filter
+                if (activeDocSubFilter !== 'all') {
+                    const ext = (item.name || '').split('.').pop().toLowerCase();
+                    if (activeDocSubFilter === 'pdf' && ext !== 'pdf') return false;
+                    if (activeDocSubFilter === 'word' && !['doc', 'docx', 'txt', 'rtf', 'md', 'odt'].includes(ext)) return false;
+                    if (activeDocSubFilter === 'excel' && !['xls', 'xlsx', 'csv', 'ods'].includes(ext)) return false;
+                    if (activeDocSubFilter === 'ppt' && !['ppt', 'pptx', 'key'].includes(ext)) return false;
+                }
+
+                // Size Filter
+                const sz = item.size || 0;
+                if (currentSizeFilter === 'large' && sz < 50 * 1024 * 1024) return false;
+                if (currentSizeFilter === 'medium' && (sz < 1024 * 1024 || sz >= 50 * 1024 * 1024)) return false;
+                if (currentSizeFilter === 'small' && sz >= 1024 * 1024) return false;
+
+                // Search query
+                if (query) {
+                    const name = (item.name || '').toLowerCase();
+                    const cat = (item.category || '').toLowerCase();
+                    const rel = (item.rel_path || '').toLowerCase();
+                    if (!name.includes(query) && !cat.includes(query) && !rel.includes(query)) return false;
+                }
+
+                return true;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                if (currentSort === 'latest') return (b.mtime || b.modified || '').localeCompare ? (b.modified || '').localeCompare(a.modified || '') : (b.mtime || 0) - (a.mtime || 0);
+                if (currentSort === 'oldest') return (a.mtime || a.modified || '').localeCompare ? (a.modified || '').localeCompare(b.modified || '') : (a.mtime || 0) - (b.mtime || 0);
+                if (currentSort === 'largest') return (b.size || 0) - (a.size || 0);
+                if (currentSort === 'smallest') return (a.size || 0) - (b.size || 0);
+                if (currentSort === 'name_asc') return (a.name || '').localeCompare(b.name || '');
+                return 0;
+            });
+
+            return filtered;
+        }
+
+        // =========================================================================
+        // SELECTION & BATCH ACTIONS
+        // =========================================================================
+        function toggleSelectAll(checked) {
+            const currentItems = sortAndFilterArray(allPlan);
+            if (checked) {
+                currentItems.forEach(item => {
+                    const p = item.src || item.path;
+                    if (p) selectedFilePaths.add(p);
+                });
+            } else {
+                currentItems.forEach(item => {
+                    const p = item.src || item.path;
+                    if (p) selectedFilePaths.delete(p);
+                });
+            }
+            updateSelectionUI();
+            renderFileList();
+        }
+
+        function toggleItemSelection(filePath, event) {
+            if (event) event.stopPropagation();
+            if (selectedFilePaths.has(filePath)) {
+                selectedFilePaths.delete(filePath);
+            } else {
+                selectedFilePaths.add(filePath);
+            }
+            updateSelectionUI();
+            
+            // Update individual element UI
+            const checkbox = document.querySelector(`input[data-path="${CSS.escape(filePath)}"]`);
+            if (checkbox) checkbox.checked = selectedFilePaths.has(filePath);
+
+            const card = document.getElementById(`item-card-${btoa(encodeURIComponent(filePath)).replace(/=/g, '')}`);
+            if (card) {
+                if (selectedFilePaths.has(filePath)) {
+                    card.classList.add('border-blue-500', 'bg-blue-500/10');
+                } else {
+                    card.classList.remove('border-blue-500', 'bg-blue-500/10');
+                }
+            }
+        }
+
+        function updateSelectionUI() {
+            const count = selectedFilePaths.size;
+            document.getElementById('lblSelectedCount').innerText = count;
+            document.getElementById('lblMoveSelectedBtnCount').innerText = count;
+
+            const btnMoveSelected = document.getElementById('btnMoveSelected');
+            if (count > 0 && currentMainTab === 'desktop') {
+                btnMoveSelected.classList.remove('hidden');
+                btnMoveSelected.classList.add('flex');
+            } else {
+                btnMoveSelected.classList.add('hidden');
+                btnMoveSelected.classList.remove('flex');
+            }
+
+            const currentFiltered = sortAndFilterArray(allPlan);
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            if (currentFiltered.length > 0 && currentFiltered.every(it => selectedFilePaths.has(it.src || it.path))) {
+                selectAllCheckbox.checked = true;
+            } else {
+                selectAllCheckbox.checked = false;
+            }
+        }
+
+        async function moveSelectedItems() {
+            if (selectedFilePaths.size === 0) return;
+            const itemsToMove = allPlan.filter(it => selectedFilePaths.has(it.src || it.path));
+            if (itemsToMove.length === 0) return;
+            selectedFilePaths.clear();
+            updateSelectionUI();
+            await organizeItems(itemsToMove);
+        }
+
+        // =========================================================================
+        // RENDER FILE LIST (Desktop / Loose Files)
+        // =========================================================================
+        function renderFileList() {
+            const filtered = sortAndFilterArray(allPlan);
+            const container = document.getElementById('fileItemsList');
+            document.getElementById('tableHeaderIcon').className = "fa-solid fa-folder-tree text-blue-500 dark:text-blue-400";
+            document.getElementById('filteredItemsCountHeader').innerText = `${currentLocationName} Loose Files (${filtered.length} items)`;
+            document.getElementById('lblCleanSectionText').innerText = `Clean & Move All (${filtered.length})`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-slate-400 flex flex-col items-center justify-center space-y-2">
+                        <i class="fa-solid fa-folder-open text-3xl text-slate-400/50"></i>
+                        <p class="text-xs">No loose files matching current filter in ${currentLocationName}.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (viewMode === 'grid') {
+                container.className = "p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-[380px] overflow-y-auto";
+                container.innerHTML = filtered.map(item => renderGridCard(item, false)).join('');
+            } else {
+                container.className = "divide-y divide-slate-200 dark:divide-white/5 max-h-[380px] overflow-y-auto";
+                container.innerHTML = filtered.map(item => renderListRow(item, false)).join('');
+            }
+        }
+
+        // =========================================================================
+        // ASSORTED FOLDER BROWSER & FOLDER ICONS IN TABLE
+        // =========================================================================
+        async function loadAssortedFiles() {
+            try {
+                const res = await fetch(`/api/assorted-files?dest=${encodeURIComponent(currentDest)}`);
+                const data = await res.json();
+                assortedFiles = data.files || [];
+                document.getElementById('tabBadgeAssorted').innerText = assortedFiles.length;
+                if (currentMainTab === 'assorted') {
+                    updateAssortedCategoryCards();
+                    renderAssortedInTable();
+                }
+            } catch (err) {
+                console.error("Assorted files scan error:", err);
+            }
+        }
+
+        function drillIntoAssortedCategory(category) {
+            currentAssortedCategory = category;
+            const breadcrumb = document.getElementById('assortedBreadcrumb');
+            const breadcrumbTitle = document.getElementById('breadcrumbCategoryName');
+
+            if (category) {
+                breadcrumb.classList.remove('hidden');
+                breadcrumb.classList.add('flex');
+                const theme = FOLDER_THEME_MAP[category] || { color: 'text-amber-500' };
+                breadcrumbTitle.innerHTML = `<i class="fa-solid fa-folder ${theme.color} text-xs"></i><span>${category}</span>`;
+            } else {
+                breadcrumb.classList.add('hidden');
+                breadcrumb.classList.remove('flex');
+            }
+
+            renderAssortedInTable();
+        }
+
+        function renderAssortedInTable() {
+            const container = document.getElementById('fileItemsList');
+            const headerText = document.getElementById('filteredItemsCountHeader');
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            document.getElementById('tableHeaderIcon').className = "fa-solid fa-folder-open text-amber-500";
+
+            // If query is active or drilled into a folder: render files
+            if (query || currentAssortedCategory) {
+                let itemsToRender = assortedFiles;
+                if (currentAssortedCategory) {
+                    itemsToRender = assortedFiles.filter(f => f.category === currentAssortedCategory);
+                }
+
+                const filtered = sortAndFilterArray(itemsToRender);
+                headerText.innerText = currentAssortedCategory 
+                    ? `Sorted Files / ${currentAssortedCategory} (${filtered.length} items)`
+                    : `Assorted Search Matches (${filtered.length} items)`;
+
+                if (filtered.length === 0) {
+                    container.className = "divide-y divide-slate-200 dark:divide-white/5 max-h-[380px] overflow-y-auto";
+                    container.innerHTML = `
+                        <div class="p-8 text-center text-slate-400 flex flex-col items-center justify-center space-y-2">
+                            <i class="fa-solid fa-folder-open text-3xl text-slate-400/50"></i>
+                            <p class="text-xs">No assorted files match the current filter.</p>
+                            ${currentAssortedCategory ? '<button onclick="drillIntoAssortedCategory(null)" class="text-xs text-blue-500 hover:underline font-medium">&larr; Back to All Categories</button>' : ''}
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (viewMode === 'grid') {
+                    container.className = "p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-[380px] overflow-y-auto";
+                    container.innerHTML = filtered.map(item => renderGridCard(item, true)).join('');
+                } else {
+                    container.className = "divide-y divide-slate-200 dark:divide-white/5 max-h-[380px] overflow-y-auto";
+                    container.innerHTML = filtered.map(item => renderListRow(item, true)).join('');
+                }
+                return;
+            }
+
+            // Root Assorted Folder View -> Render Category Folder Icons inside the table!
+            const groups = {};
+            assortedFiles.forEach(f => {
+                const cat = f.category || 'Other';
+                if (!groups[cat]) {
+                    groups[cat] = { count: 0, bytes: 0 };
+                }
+                groups[cat].count += 1;
+                groups[cat].bytes += (f.size || 0);
+            });
+
+            const categoryList = Object.keys(groups).sort((a, b) => groups[b].count - groups[a].count);
+            headerText.innerText = `Assorted Folders in ${currentDest.split('\\').pop()} (${categoryList.length} folders &bull; ${assortedFiles.length} items)`;
+
+            if (categoryList.length === 0) {
+                container.className = "divide-y divide-slate-200 dark:divide-white/5 max-h-[380px] overflow-y-auto";
+                container.innerHTML = `
+                    <div class="p-8 text-center text-slate-400 flex flex-col items-center justify-center space-y-2">
+                        <i class="fa-solid fa-box-open text-3xl text-slate-400/50"></i>
+                        <p class="text-xs">No files have been organized yet in this location. Switch to ${currentLocationName} Mode to sort your files!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.className = "divide-y divide-slate-200 dark:divide-white/5 max-h-[380px] overflow-y-auto";
+            container.innerHTML = categoryList.map(cat => {
+                const group = groups[cat];
+                const theme = FOLDER_THEME_MAP[cat] || { color: 'text-amber-500', bg: 'bg-amber-500/15', border: 'border-amber-500/30', badge: 'bg-amber-500/20 text-amber-500' };
+                const folderPath = `${currentDest}\\${cat}`;
+
+                return `
+                <div onclick="drillIntoAssortedCategory('${escapeHtml(cat)}')" class="p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:bg-slate-200/40 dark:hover:bg-white/5 transition cursor-pointer group">
+                    <div class="flex items-center space-x-3.5 min-w-0">
+                        <div class="w-10 h-10 rounded-2xl ${theme.bg} border ${theme.border} flex items-center justify-center text-xl shrink-0 group-hover:scale-105 transition shadow-sm">
+                            <i class="fa-solid fa-folder ${theme.color}"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-semibold text-xs text-slate-900 dark:text-slate-100 group-hover:text-blue-500 transition">${escapeHtml(cat)}</h4>
+                                <span class="px-2 py-0.5 rounded-full ${theme.badge} text-[10px] font-mono font-medium">${group.count} files</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 flex items-center space-x-1.5 truncate">
+                                <span>${formatBytes(group.bytes)}</span>
+                                <span class="text-slate-400 dark:text-slate-600">&bull;</span>
+                                <span class="truncate">${currentDest.split('\\').pop()}/${escapeHtml(cat)}/</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end" onclick="event.stopPropagation()">
+                        <button onclick="revealInFinder('${encodeURIComponent(folderPath)}')" class="glass-card hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1.5 active:scale-95" title="Reveal folder in File Explorer">
+                            <i class="fa-solid fa-folder-open text-amber-500 text-xs"></i>
+                            <span>Explorer</span>
+                        </button>
+                        <button onclick="drillIntoAssortedCategory('${escapeHtml(cat)}')" class="bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-medium transition shadow-sm flex items-center space-x-1.5 active:scale-95">
+                            <span>Browse Files</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // =========================================================================
+        // ROW / CARD RENDERERS (With Checkbox, Thumbnails, Right-Click & Long-Press!)
+        // =========================================================================
+        function isImageFile(name) {
+            const ext = (name || '').split('.').pop().toLowerCase();
+            return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(ext);
+        }
+
+        function getCardSafeId(path) {
+            return btoa(encodeURIComponent(path)).replace(/=/g, '');
+        }
+
+        function renderListRow(item, isAssorted) {
+            const filePath = item.path || item.src;
+            const isImg = isImageFile(item.name);
+            const iconClass = ICON_MAP[item.category] || 'fa-solid fa-file text-slate-400';
+            const thumbUrl = isImg ? `/api/thumbnail?path=${encodeURIComponent(filePath)}` : null;
+            const isSelected = selectedFilePaths.has(filePath);
+            const cardId = `item-card-${getCardSafeId(filePath)}`;
+            const itemJsonEscaped = escapeHtml(JSON.stringify(item));
+
+            return `
+            <div id="${cardId}" 
+                 data-item="${itemJsonEscaped}"
+                 data-is-assorted="${isAssorted}"
+                 oncontextmenu="handleItemContextMenu(event, this)"
+                 onmousedown="handleItemPressStart(event, this)"
+                 onmouseup="handleItemPressEnd(event)"
+                 ontouchstart="handleItemPressStart(event, this)"
+                 ontouchend="handleItemPressEnd(event)"
+                 class="p-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:bg-slate-200/40 dark:hover:bg-white/5 transition select-none ${isSelected ? 'border-l-4 border-blue-500 bg-blue-500/10' : ''}">
+                
+                <div class="flex items-center space-x-3 min-w-0 flex-1">
+                    ${!isAssorted ? `
+                        <input type="checkbox" data-path="${escapeHtml(filePath)}" ${isSelected ? 'checked' : ''} 
+                               onclick="toggleItemSelection('${escapeHtml(filePath)}', event)"
+                               class="w-4 h-4 accent-blue-600 rounded cursor-pointer shrink-0">
+                    ` : ''}
+
+                    <div class="w-10 h-10 rounded-xl bg-slate-200/70 dark:bg-black/30 flex items-center justify-center shrink-0 border border-slate-300/40 dark:border-white/10 overflow-hidden relative">
+                        ${isImg 
+                            ? `<img src="${thumbUrl}" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'${iconClass}\\'></i>';">`
+                            : `<i class="${iconClass}"></i>`
+                        }
+                    </div>
+                    
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center space-x-2">
+                            <h4 class="font-medium text-xs text-slate-900 dark:text-slate-200 truncate max-w-sm sm:max-w-md" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h4>
+                            <span class="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[9px] font-mono border border-blue-500/30 shrink-0">${escapeHtml(item.category)}</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 flex items-center space-x-1.5 truncate">
+                            <span>${formatBytes(item.size)}</span>
+                            <span class="text-slate-400 dark:text-slate-600">&bull;</span>
+                            <span>${item.modified || ''}</span>
+                            <span class="text-slate-400 dark:text-slate-600">&bull;</span>
+                            <span class="text-slate-400 truncate">${escapeHtml(item.rel_path || item.dest || '')}</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-2 w-full sm:w-auto justify-end shrink-0" onclick="event.stopPropagation()">
+                    ${isAssorted 
+                        ? `
+                        <button onclick="launchFile('${encodeURIComponent(filePath)}')" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-xl text-xs font-medium transition shadow-sm flex items-center space-x-1.5 active:scale-95" title="Directly open file">
+                            <i class="fa-solid fa-play text-[10px]"></i>
+                            <span>Open</span>
+                        </button>
+                        <button onclick="revealInFinder('${encodeURIComponent(filePath)}')" class="glass-card hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1.5 active:scale-95" title="Reveal in File Explorer">
+                            <i class="fa-solid fa-folder-open text-slate-400 text-xs"></i>
+                            <span>Explorer</span>
+                        </button>
+                        `
+                        : `
+                        <button onclick="revealInFinder('${encodeURIComponent(item.src)}')" class="glass-card hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1.5 active:scale-95">
+                            <i class="fa-solid fa-folder-open text-slate-400 text-xs"></i>
+                            <span>Explorer</span>
+                        </button>
+                        <button onclick="organizeItems([${JSON.stringify(item).replace(/"/g, '&quot;')}])" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-xl text-xs font-medium transition shadow-sm flex items-center space-x-1.5 active:scale-95">
+                            <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+                            <span>Move</span>
+                        </button>
+                        `
+                    }
+                </div>
+            </div>
+            `;
+        }
+
+        function renderGridCard(item, isAssorted) {
+            const filePath = item.path || item.src;
+            const isImg = isImageFile(item.name);
+            const iconClass = ICON_MAP[item.category] || 'fa-solid fa-file text-slate-400';
+            const thumbUrl = isImg ? `/api/thumbnail?path=${encodeURIComponent(filePath)}` : null;
+            const isSelected = selectedFilePaths.has(filePath);
+            const cardId = `item-card-${getCardSafeId(filePath)}`;
+            const itemJsonEscaped = escapeHtml(JSON.stringify(item));
+
+            return `
+            <div id="${cardId}" 
+                 data-item="${itemJsonEscaped}"
+                 data-is-assorted="${isAssorted}"
+                 oncontextmenu="handleItemContextMenu(event, this)"
+                 onmousedown="handleItemPressStart(event, this)"
+                 onmouseup="handleItemPressEnd(event)"
+                 ontouchstart="handleItemPressStart(event, this)"
+                 ontouchend="handleItemPressEnd(event)"
+                 class="glass-card border border-slate-200 dark:border-white/5 hover:border-blue-500/50 p-2.5 rounded-2xl flex flex-col justify-between transition group relative shadow-sm select-none ${isSelected ? 'border-blue-500 bg-blue-500/10 ring-2 ring-blue-500/40' : ''}">
+                
+                <!-- Top Checkbox (Desktop Mode) -->
+                ${!isAssorted ? `
+                    <div class="absolute top-2 left-2 z-10" onclick="event.stopPropagation()">
+                        <input type="checkbox" data-path="${escapeHtml(filePath)}" ${isSelected ? 'checked' : ''} 
+                               onclick="toggleItemSelection('${escapeHtml(filePath)}', event)"
+                               class="w-4 h-4 accent-blue-600 rounded cursor-pointer drop-shadow">
+                    </div>
+                ` : ''}
+
+                <!-- Thumbnail or Icon preview box -->
+                <div class="w-full aspect-square rounded-xl bg-slate-200/50 dark:bg-black/30 border border-slate-300/30 dark:border-white/5 flex items-center justify-center overflow-hidden relative mb-2">
+                    ${isImg
+                        ? `<img src="${thumbUrl}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'${iconClass} text-2xl\\'></i>';">`
+                        : `<i class="${iconClass} text-2xl group-hover:scale-110 transition duration-300"></i>`
+                    }
+                    <span class="absolute bottom-1 right-1 px-1 py-0.5 rounded bg-black/60 text-white text-[8px] font-mono backdrop-blur-sm">${formatBytes(item.size)}</span>
+                </div>
+
+                <!-- Info -->
+                <div class="min-w-0">
+                    <h4 class="font-medium text-[11px] text-slate-900 dark:text-slate-100 truncate" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h4>
+                    <span class="text-[9px] text-slate-400 font-mono block truncate">${escapeHtml(item.category)}</span>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="mt-2 flex items-center space-x-1 pt-1 border-t border-slate-200 dark:border-white/5" onclick="event.stopPropagation()">
+                    ${isAssorted 
+                        ? `
+                        <button onclick="launchFile('${encodeURIComponent(filePath)}')" class="flex-1 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[10px] font-medium transition shadow-sm flex items-center justify-center space-x-1">
+                            <i class="fa-solid fa-play text-[8px]"></i>
+                            <span>Open</span>
+                        </button>
+                        <button onclick="revealInFinder('${encodeURIComponent(filePath)}')" class="p-1 px-2 rounded-lg bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-600 dark:text-slate-300 transition text-[10px]" title="Explorer">
+                            <i class="fa-solid fa-folder-open text-[9px]"></i>
+                        </button>
+                        `
+                        : `
+                        <button onclick="organizeItems([${JSON.stringify(item).replace(/"/g, '&quot;')}])" class="flex-1 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[10px] font-medium transition shadow-sm flex items-center justify-center space-x-1">
+                            <i class="fa-solid fa-arrow-right-to-bracket text-[8px]"></i>
+                            <span>Move</span>
+                        </button>
+                        <button onclick="revealInFinder('${encodeURIComponent(item.src)}')" class="p-1 px-2 rounded-lg bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-600 dark:text-slate-300 transition text-[10px]" title="Explorer">
+                            <i class="fa-solid fa-folder-open text-[9px]"></i>
+                        </button>
+                        `
+                    }
+                </div>
+            </div>
+            `;
+        }
+
+        // =========================================================================
+        // CONTEXT MENU & LONG PRESS LOGIC
+        // =========================================================================
+        function handleItemContextMenu(e, elem) {
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+                const item = JSON.parse(elem.getAttribute('data-item'));
+                const isAssorted = elem.getAttribute('data-is-assorted') === 'true';
+                showContextMenu(e.clientX, e.clientY, item, isAssorted);
+            } catch (err) {}
+        }
+
+        function handleItemPressStart(e, elem) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            longPressTimer = setTimeout(() => {
+                try {
+                    const item = JSON.parse(elem.getAttribute('data-item'));
+                    const isAssorted = elem.getAttribute('data-is-assorted') === 'true';
+                    showContextMenu(clientX, clientY, item, isAssorted);
+                } catch (err) {}
+            }, 450);
+        }
+
+        function handleItemPressEnd(e) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        }
+
+        function showContextMenu(x, y, item, isAssorted) {
+            currentContextItem = item;
+            isContextAssorted = isAssorted;
+            const menu = document.getElementById('contextMenu');
+            document.getElementById('ctxItemName').innerText = item.name;
+
+            const filePath = item.path || item.src;
+            const isSelected = selectedFilePaths.has(filePath);
+            document.getElementById('ctxToggleSelectText').innerText = isSelected ? 'Deselect Item' : 'Select Item';
+
+            const ctxBtnMove = document.getElementById('ctxBtnMove');
+            if (isAssorted) {
+                ctxBtnMove.style.display = 'none';
+            } else {
+                ctxBtnMove.style.display = 'flex';
+                document.getElementById('ctxMoveText').innerText = `Move to ${item.category}/`;
+            }
+
+            // Boundary checks
+            menu.classList.remove('hidden');
+            const menuWidth = 220;
+            const menuHeight = 200;
+            const posX = (x + menuWidth > window.innerWidth) ? window.innerWidth - menuWidth - 10 : x;
+            const posY = (y + menuHeight > window.innerHeight) ? window.innerHeight - menuHeight - 10 : y;
+
+            menu.style.left = `${posX}px`;
+            menu.style.top = `${posY}px`;
+        }
+
+        function hideContextMenu() {
+            const menu = document.getElementById('contextMenu');
+            if (menu) menu.classList.add('hidden');
+        }
+
+        function ctxMoveItem() {
+            hideContextMenu();
+            if (currentContextItem) {
+                organizeItems([currentContextItem]);
+            }
+        }
+
+        function ctxOpenFile() {
+            hideContextMenu();
+            if (currentContextItem) {
+                launchFile(encodeURIComponent(currentContextItem.path || currentContextItem.src));
+            }
+        }
+
+        function ctxRevealExplorer() {
+            hideContextMenu();
+            if (currentContextItem) {
+                revealInFinder(encodeURIComponent(currentContextItem.path || currentContextItem.src));
+            }
+        }
+
+        function ctxToggleSelect() {
+            hideContextMenu();
+            if (currentContextItem) {
+                toggleItemSelection(currentContextItem.path || currentContextItem.src);
+            }
+        }
+
+        function ctxCopyPath() {
+            hideContextMenu();
+            if (currentContextItem) {
+                const p = currentContextItem.path || currentContextItem.src;
+                navigator.clipboard.writeText(p).then(() => {
+                    showToast('Path copied to clipboard');
+                }).catch(() => {});
+            }
+        }
+
+        async function openSortedFolderInExplorer() {
+            showToast('Opening Sorted Files in File Explorer...');
+            await fetch('/api/open-folder', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: currentDest })
+            });
+        }
+
+        async function launchFile(encodedPath) {
+            const path = decodeURIComponent(encodedPath);
+            showToast('Opening: ' + path.split('\\').pop());
+            await fetch('/api/open-file', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path })
+            });
+        }
+
+        async function revealInFinder(encodedPath) {
+            const path = decodeURIComponent(encodedPath);
+            showToast('Revealed in Explorer');
+            await fetch('/api/reveal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path })
+            });
+        }
+
+        // =========================================================================
+        // ORGANIZATION & UNDO
+        // =========================================================================
+        async function organizeAll() {
+            if (allPlan.length === 0) {
+                showToast('No loose files to organize!', 'info');
+                return;
+            }
+            await organizeItems(allPlan);
+        }
+
+        async function organizeCurrentFiltered() {
+            const filtered = sortAndFilterArray(allPlan);
+            if (filtered.length === 0) {
+                showToast('No filtered items to move', 'info');
+                return;
+            }
+            await organizeItems(filtered);
+        }
+
+        async function organizeItems(items) {
+            showToast(`Moving ${items.length} file(s) into ${currentDest.split('\\').pop()}...`);
+            try {
+                const res = await fetch('/api/organize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items, dest: currentDest })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Successfully organized ${data.moved.length} file(s)!`);
+                    selectedFilePaths.clear();
+                    updateSelectionUI();
+                    await triggerScan();
+                    await loadAssortedFiles();
+                } else {
+                    showToast('Failed to organize: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (err) {
+                showToast('Error organizing files: ' + err.message, 'error');
+            }
+        }
+
+        async function triggerUndo() {
+            showToast('Restoring last moved files back...');
+            try {
+                const res = await fetch('/api/undo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dest: currentDest })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Undo finished: ${data.restored.length} items restored`);
+                    await triggerScan();
+                    await loadAssortedFiles();
+                } else {
+                    showToast('Undo failed: ' + data.error, 'error');
+                }
+            } catch (err) {
+                showToast('Undo error: ' + err.message, 'error');
+            }
+        }
+
+        function updateUndoButton(available) {
+            const btn = document.getElementById('btnUndo');
+            if (!btn) return;
+            if (available) {
+                btn.disabled = false;
+                btn.className = "w-8 h-8 rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-amber-500 cursor-pointer";
+                btn.title = "Undo Last Move";
+            } else {
+                btn.disabled = true;
+                btn.className = "w-8 h-8 rounded-xl flex items-center justify-center transition opacity-30 cursor-not-allowed";
+                btn.title = "No move to undo";
+            }
+        }
+
+        // Settings / Folder Dialogs
+        async function browseSourceFolder() {
+            try {
+                const res = await fetch('/api/browse?type=source');
+                const data = await res.json();
+                if (data.path) {
+                    currentSource = data.path;
+                    const folderName = data.path.split('\\').pop() || 'Custom';
+                    currentDest = `${data.path}\\${folderName} Assorted`;
+                    document.getElementById('lblSelectedLocationName').innerText = folderName;
+                    updatePathDisplay();
+                    await triggerScan();
+                    await loadAssortedFiles();
+                }
+            } catch (err) {}
+        }
+
+        async function browseDestFolder() {
+            try {
+                const res = await fetch('/api/browse?type=dest');
+                const data = await res.json();
+                if (data.path) {
+                    currentDest = data.path;
+                    document.getElementById('settingDestInput').value = currentDest;
+                    updatePathDisplay();
+                    await triggerScan();
+                    await loadAssortedFiles();
+                }
+            } catch (err) {}
+        }
+
+        async function openRulesFile() {
+            await fetch('/api/open-rules', { method: 'POST' });
+        }
+
+        // Modals
+        function toggleSettingsModal(show) {
+            const modal = document.getElementById('settingsModal');
+            if (show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+
+        // Theme management
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+        }
+
+        function setTheme(theme) {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeToggleIcon');
+            const lightBtn = document.getElementById('lightThemeBtn');
+            const darkBtn = document.getElementById('darkThemeBtn');
+
+            if (theme === 'light') {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                if (icon) icon.className = "fa-solid fa-moon text-xs";
+                if (lightBtn && darkBtn) {
+                    lightBtn.className = "px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 bg-white text-slate-900 shadow-sm";
+                    darkBtn.className = "px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-slate-600";
+                }
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                if (icon) icon.className = "fa-solid fa-sun text-xs text-amber-400";
+                if (lightBtn && darkBtn) {
+                    darkBtn.className = "px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 bg-white/10 text-white shadow-sm";
+                    lightBtn.className = "px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-slate-400";
+                }
+            }
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem('theme') || 'light';
+            setTheme(saved);
+        }
+
+        // Helpers
+        function formatBytes(bytes) {
+            if (!bytes || bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-message');
+            const icon = document.getElementById('toast-icon');
+
+            msg.textContent = message;
+            if (type === 'error') {
+                icon.className = 'fa-solid fa-circle-exclamation text-red-500 text-base';
+            } else if (type === 'info') {
+                icon.className = 'fa-solid fa-circle-info text-blue-500 text-base';
+            } else {
+                icon.className = 'fa-solid fa-circle-check text-emerald-500 dark:text-emerald-400 text-base';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // =========================================================================
+        // APP OPENER ANIMATION LOGIC
+        // =========================================================================
+        let openerDismissed = false;
+
+        function initAppOpener() {
+            const overlay = document.getElementById('appSplashOverlay');
+            const video = document.getElementById('appOpenerVideo');
+            const progressBar = document.getElementById('openerProgressBar');
+            const statusText = document.getElementById('openerStatusText');
+            const percentText = document.getElementById('openerPercentText');
+            if (!overlay || !video) return;
+
+            video.addEventListener('timeupdate', () => {
+                if (video.duration && !isNaN(video.duration)) {
+                    const percent = Math.min(100, Math.round((video.currentTime / video.duration) * 100));
+                    if (progressBar) progressBar.style.width = percent + '%';
+                    if (percentText) percentText.innerText = percent + '%';
+
+                    if (percent < 30) {
+                        if (statusText) statusText.innerText = 'Scanning desktop & directories...';
+                    } else if (percent < 70) {
+                        if (statusText) statusText.innerText = 'Categorizing media, docs & installers...';
+                    } else if (percent < 95) {
+                        if (statusText) statusText.innerText = 'Assembling 1-Click Clean workspace...';
+                    } else {
+                        if (statusText) statusText.innerText = 'Ready!';
+                    }
+                }
+            });
+
+            video.addEventListener('ended', () => {
+                dismissAppOpener();
+            });
+
+            // Let animation play completely till the end
+            video.addEventListener('ended', () => {
+                setTimeout(dismissAppOpener, 400);
+            });
+
+            video.play().catch(e => {
+                console.log("Autoplay waiting for user gesture or muted:", e);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (!openerDismissed && (e.key === 'Escape' || e.key === ' ')) {
+                    dismissAppOpener();
+                }
+            });
+        }
+
+        function dismissAppOpener() {
+            if (openerDismissed) return;
+            openerDismissed = true;
+            const overlay = document.getElementById('appSplashOverlay');
+            const video = document.getElementById('appOpenerVideo');
+            if (overlay) {
+                overlay.classList.add('opacity-0', 'pointer-events-none', 'scale-105');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    if (video) video.pause();
+                    navigateToPage('dashboard');
+                }, 750);
+            }
+        }
+
+        function playAppOpener(force = false) {
+            openerDismissed = false;
+            const overlay = document.getElementById('appSplashOverlay');
+            const video = document.getElementById('appOpenerVideo');
+            const progressBar = document.getElementById('openerProgressBar');
+            if (!overlay || !video) return;
+
+            overlay.classList.remove('hidden', 'opacity-0', 'pointer-events-none', 'scale-105');
+            if (progressBar) progressBar.style.width = '0%';
+            video.currentTime = 0;
+            video.play().catch(() => {});
+        }
+
+        // Initialize App Opener on startup
+        setTimeout(initAppOpener, 50);
+
+    
+        /* =====================================================================
+           MULTI-LOCATION DASHBOARD & PAGE NAVIGATION LOGIC
+           ===================================================================== */
+        let currentDashboardFilter = 'all';
+        let cachedDashboardLocations = [];
+        let currentAppPage = 'dashboard'; // 'dashboard' or 'studio'
+
+        function navigateToPage(page, locId = null) {
+            currentAppPage = page;
+            const dashView = document.getElementById('viewMainDashboard');
+            const studioView = document.getElementById('viewLocationStudio');
+
+            if (page === 'dashboard') {
+                if (studioView) studioView.classList.add('hidden');
+                if (dashView) dashView.classList.remove('hidden');
+                loadDashboardSummary();
+            } else if (page === 'studio') {
+                if (dashView) dashView.classList.add('hidden');
+                if (studioView) studioView.classList.remove('hidden');
+                if (locId) {
+                    selectLocation(locId);
+                } else {
+                    triggerScan();
+                }
+            }
+        }
+
+        async function loadDashboardSummary() {
+            try {
+                const res = await fetch('/api/dashboard-summary');
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                const data = await res.json();
+                cachedDashboardLocations = data.locations || [];
+
+                // Calculate summary totals
+                let totalLoose = 0;
+                let totalBytes = 0;
+                let drivesCount = 0;
+
+                cachedDashboardLocations.forEach(loc => {
+                    totalLoose += (loc.file_count || 0);
+                    totalBytes += (loc.total_size || 0);
+                    if (loc.is_drive) drivesCount++;
+                });
+
+                const elLocCount = document.getElementById('dashStatLocationsCount');
+                const elLooseCount = document.getElementById('dashStatLooseFiles');
+                const elReclaimable = document.getElementById('dashStatReclaimable');
+                const elDrivesCount = document.getElementById('dashStatDrivesCount');
+                const elBadgeAll = document.getElementById('dashBadgeAll');
+
+                if (elLocCount) elLocCount.innerText = cachedDashboardLocations.length;
+                if (elLooseCount) elLooseCount.innerText = totalLoose;
+                if (elReclaimable) elReclaimable.innerText = formatHumanSize(totalBytes);
+                if (elDrivesCount) elDrivesCount.innerText = drivesCount;
+                if (elBadgeAll) elBadgeAll.innerText = cachedDashboardLocations.length;
+                const pillLoose = document.getElementById('dashPillLoose');
+                const pillSize = document.getElementById('dashPillSize');
+                if (pillLoose) pillLoose.innerText = `${totalLoose} unorganized files`;
+                if (pillSize) pillSize.innerText = formatHumanSize(totalBytes);
+
+                renderDashboardLocations(cachedDashboardLocations);
+            } catch (err) {
+                console.error("Failed to load dashboard summary:", err);
+            }
+        }
+
+        function formatHumanSize(bytes) {
+            if (!bytes || bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function filterDashboardLocations(tab) {
+            currentDashboardFilter = tab;
+            const tabs = ['all', 'desktop', 'downloads', 'documents', 'drives'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('dashTab' + t.charAt(0).toUpperCase() + t.slice(1));
+                if (btn) {
+                    if (t === tab) {
+                        btn.className = 'px-4 py-2 rounded-xl font-semibold transition flex items-center space-x-2 bg-blue-600 text-white shadow-md cursor-pointer';
+                    } else {
+                        btn.className = 'px-4 py-2 rounded-xl font-semibold transition flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer';
+                    }
+                }
+            });
+
+            let filtered = cachedDashboardLocations;
+            if (tab === 'desktop') filtered = cachedDashboardLocations.filter(l => l.id === 'desktop');
+            else if (tab === 'downloads') filtered = cachedDashboardLocations.filter(l => l.id === 'downloads');
+            else if (tab === 'documents') filtered = cachedDashboardLocations.filter(l => l.id === 'documents');
+            else if (tab === 'drives') filtered = cachedDashboardLocations.filter(l => l.is_drive);
+
+            renderDashboardLocations(filtered);
+        }
+
+                function renderDashboardLocations(locations) {
+            const container = document.getElementById('dashLocationsGrid');
+            if (!container) return;
+
+            if (!locations || locations.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-400">
+                        <i class="fa-solid fa-folder-open text-2xl mb-1.5"></i>
+                        <p class="text-xs font-semibold">No locations found for this filter.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = locations.map(loc => {
+                const colorMap = {
+                    amber: { bg: 'bg-amber-500/15', border: 'border-amber-500/30', text: 'text-amber-500' },
+                    cyan: { bg: 'bg-cyan-500/15', border: 'border-cyan-500/30', text: 'text-cyan-500' },
+                    purple: { bg: 'bg-purple-500/15', border: 'border-purple-500/30', text: 'text-purple-500' },
+                    blue: { bg: 'bg-blue-500/15', border: 'border-blue-500/30', text: 'text-blue-500' },
+                    emerald: { bg: 'bg-emerald-500/15', border: 'border-emerald-500/30', text: 'text-emerald-500' },
+                };
+                const color = colorMap[loc.color] || colorMap.blue;
+
+                let driveMeterHtml = '';
+                if (loc.is_drive && loc.drive_info) {
+                    const di = loc.drive_info;
+                    driveMeterHtml = `
+                        <div class="space-y-1 pt-1">
+                            <div class="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
+                                <span>Drive Storage</span>
+                                <span class="font-mono">${di.free_gb} GB free / ${di.total_gb} GB</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-white/10 h-1.5 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style="width: ${di.used_percent}%"></div>
+                            </div>
+                        </div>`;
+                }
+
+                const fileCountText = (loc.file_count || 0) === 0 ? 'Clean (0 B)' : `${loc.file_count} files (${loc.total_size_human || '0 B'})`;
+                const subfolderText = `${loc.subfolder_count || 0} subfolders`;
+
+                return `
+                    <div class="glass-card rounded-2xl p-4 border border-slate-200/80 dark:border-white/10 shadow-sm hover:shadow-md hover:border-blue-500/40 transition-all flex flex-col justify-between bg-white/70 dark:bg-[#202127]/80 backdrop-blur-md">
+                        <div class="space-y-2.5">
+                            <!-- Card Header -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-9 h-9 rounded-xl ${color.bg} ${color.border} border flex items-center justify-center ${color.text} text-sm shrink-0">
+                                        <i class="${loc.icon}"></i>
+                                    </div>
+                                    <div class="leading-tight">
+                                        <div class="flex items-center space-x-1.5">
+                                            <span class="font-bold text-sm text-slate-900 dark:text-white">${loc.name}</span>
+                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-semibold bg-slate-200/70 dark:bg-white/10 text-slate-500 dark:text-slate-400">${loc.badge}</span>
+                                        </div>
+                                        <span class="text-[10px] text-slate-400 font-mono truncate max-w-[170px] inline-block" title="${loc.path}">${loc.path}</span>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${loc.file_count > 0 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'}">
+                                    ${fileCountText}
+                                </span>
+                            </div>
+
+                            ${driveMeterHtml}
+
+                            <div class="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                                <span><i class="fa-solid fa-folder-tree text-[10px] mr-1"></i>${subfolderText}</span>
+                                <span><i class="fa-solid fa-box-archive text-[10px] mr-1 text-amber-500"></i>${loc.dest_name}/</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Actions -->
+                        <div class="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-white/10 grid grid-cols-2 gap-2">
+                            <button onclick="cleanLocationDirect('${loc.id}', this)" class="h-8 px-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm active:scale-95 transition flex items-center justify-center space-x-1.5 cursor-pointer" title="Auto-assort in 1 click">
+                                <i class="fa-solid fa-broom text-[10px]"></i>
+                                <span>1-Click Clean</span>
+                            </button>
+                            <button onclick="navigateToPage('studio', '${loc.id}')" class="h-8 px-2.5 rounded-xl bg-slate-200/70 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/15 text-slate-800 dark:text-white font-semibold text-xs active:scale-95 transition flex items-center justify-center space-x-1 cursor-pointer border border-slate-300/40 dark:border-white/10" title="Inspect files">
+                                <span>Open Studio</span>
+                                <i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i>
+                            </button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        async function cleanLocationDirect(locId, btnElement) {
+            const loc = cachedDashboardLocations.find(l => l.id === locId);
+            if (!loc) return;
+
+            const origHtml = btnElement ? btnElement.innerHTML : '';
+            if (btnElement) {
+                btnElement.disabled = true;
+                btnElement.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Cleaning...</span>`;
+            }
+
+            try {
+                const res = await fetch('/api/clean-location', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        source: loc.path,
+                        dest: loc.dest_path
+                    })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || `Cleaned ${data.count || 0} files successfully!`, 'success');
+                    // Refresh summary stats
+                    await loadDashboardSummary();
+                } else {
+                    showToast(data.error || 'Clean operation failed', 'error');
+                }
+            } catch (err) {
+                console.error("Clean error:", err);
+                showToast("Connection error while cleaning location", 'error');
+            } finally {
+                if (btnElement) {
+                    btnElement.disabled = false;
+                    btnElement.innerHTML = origHtml;
+                }
+            }
+        }
+
+    
+        /* =====================================================================
+           AUTO-UPDATE LOGIC (Connected to GitHub Releases)
+           ===================================================================== */
+        let autoUpdateEnabled = localStorage.getItem('organix_auto_update') !== 'false';
+
+        async function checkAppUpdate(showFeedback = true) {
+            const btnDash = document.getElementById('btnDashUpdate');
+            const btnHeader = document.getElementById('btnHeaderUpdate');
+            
+            const origDash = btnDash ? btnDash.innerHTML : '';
+            const origHeader = btnHeader ? btnHeader.innerHTML : '';
+
+            if (btnDash) btnDash.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> <span>Checking...</span>`;
+            if (btnHeader) btnHeader.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> <span>Checking...</span>`;
+
+            try {
+                const res = await fetch('/api/check-update');
+                const data = await res.json();
+                
+                setTimeout(() => {
+                    if (data.is_latest === false) {
+                        const updateBtnContent = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span><span class="font-bold">Update v${data.latest_version}</span>`;
+                        if (btnDash) {
+                            btnDash.innerHTML = updateBtnContent;
+                            btnDash.className = "h-7 px-2.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-500 text-xs font-bold flex items-center space-x-1.5 transition active:scale-95 cursor-pointer shadow-sm animate-pulse";
+                            btnDash.onclick = () => window.open(data.download_url, '_blank');
+                        }
+                        if (btnHeader) {
+                            btnHeader.innerHTML = updateBtnContent;
+                            btnHeader.className = "h-7 px-2.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-500 text-xs font-bold flex items-center space-x-1.5 transition active:scale-95 cursor-pointer shadow-sm animate-pulse";
+                            btnHeader.onclick = () => window.open(data.download_url, '_blank');
+                        }
+                        showToast(`New version v${data.latest_version} available! Click to update.`, 'info');
+                    } else {
+                        if (btnDash) btnDash.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>v${data.current_version || '1.2.0'}</span>`;
+                        if (btnHeader) btnHeader.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>v${data.current_version || '1.2.0'}</span>`;
+
+                        if (showFeedback) {
+                            showToast(`Organix is up to date (v${data.current_version || '1.2.0'} Stable)`, 'success');
+                        }
+                    }
+                }, 400);
+            } catch (e) {
+                if (btnDash) btnDash.innerHTML = origDash;
+                if (btnHeader) btnHeader.innerHTML = origHeader;
+                if (showFeedback) showToast("Organix Pro v1.2.0 (Up to date)", 'info');
+            }
+        }
+
+        function toggleAutoUpdateSetting(checked) {
+            autoUpdateEnabled = checked;
+            localStorage.setItem('organix_auto_update', checked ? 'true' : 'false');
+            fetch('/api/toggle-autoupdate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ enabled: checked })
+            }).catch(() => {});
+            showToast(checked ? "Automatic updates enabled" : "Automatic updates disabled", 'info');
+        }
+
+    </script>
+</body>
+</html>

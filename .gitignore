@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.spec
+
+# Build & binaries
+build/
+dist/
+*.exe
+
+# Vendor leftovers & temp
+customtkinter/
+darkdetect/
+*.log
+scratch/
+*_backup.py
+run file organizer.bat
+Desktop File Organizer Pro.spec
