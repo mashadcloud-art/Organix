@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="/app_icon.png">
     <link rel="shortcut icon" href="/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -36,7 +36,7 @@
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         
         .dark .glass-window {
             background: rgba(30, 31, 36, 0.96);
@@ -186,25 +186,206 @@
             </div>
         </header>
 
-        <!-- Compact Dashboard Body -->
-        <main class="flex-1 p-5 space-y-4 overflow-y-auto w-full max-w-6xl mx-auto">
-            <!-- Compact Status Ribbon -->
-            <div class="flex items-center justify-between p-3 rounded-2xl bg-white/70 dark:bg-[#202127]/70 border border-slate-200/80 dark:border-white/10 backdrop-blur-md shadow-sm flex-wrap gap-2">
-                <div class="flex items-center space-x-2 text-xs">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-semibold text-slate-800 dark:text-white">Active System Monitor:</span>
-                    <span id="dashStatusSubtitle" class="text-slate-500 dark:text-slate-400">All 5 locations monitored &bull; 1-click clean available</span>
+        <!-- Executive Bento Dashboard Body (Full-Width Responsive 2-Column) -->
+        <main class="flex-1 p-6 lg:p-8 space-y-6 overflow-y-auto w-full max-w-[1720px] mx-auto">
+            <!-- Hero Bento Metrics Strip -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                <!-- Card 1: Unorganized Files -->
+                <div class="bg-white/90 dark:bg-[#1a1b22]/90 border border-slate-200/80 dark:border-white/10 p-5 rounded-[26px] shadow-sm hover:shadow-md transition-all flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl shrink-0 border border-amber-500/20 shadow-xs">
+                        <i class="fa-solid fa-broom"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block">Waiting to Clean</span>
+                        <div class="flex items-baseline space-x-1.5 mt-0.5">
+                            <h3 id="dashPillLoose" class="text-2xl font-extrabold text-slate-900 dark:text-white">0 files</h3>
+                        </div>
+                        <span class="text-[11px] text-slate-400 truncate block mt-0.5">Across 5 monitored workspaces</span>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-3 text-xs font-mono">
-                    <span class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-semibold" id="dashPillLoose">0 files waiting</span>
-                    <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-semibold" id="dashPillSize">0 B</span>
-                    <span class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-white/10 text-slate-600 dark:text-slate-300">Undo Supported</span>
+
+                <!-- Card 2: Reclaimable Storage -->
+                <div class="bg-white/90 dark:bg-[#1a1b22]/90 border border-slate-200/80 dark:border-white/10 p-5 rounded-[26px] shadow-sm hover:shadow-md transition-all flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl shrink-0 border border-blue-500/20 shadow-xs">
+                        <i class="fa-solid fa-hard-drive"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block">Space To Organize</span>
+                        <div class="flex items-baseline space-x-1.5 mt-0.5">
+                            <h3 id="dashPillSize" class="text-2xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">0 B</h3>
+                        </div>
+                        <span class="text-[11px] text-slate-400 truncate block mt-0.5">Total unorganized payload</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Zero Data Loss Shield -->
+                <div class="bg-white/90 dark:bg-[#1a1b22]/90 border border-slate-200/80 dark:border-white/10 p-5 rounded-[26px] shadow-sm hover:shadow-md transition-all flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl shrink-0 border border-emerald-500/20 shadow-xs">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block">Protection Status</span>
+                        <div class="flex items-center space-x-1.5 mt-0.5">
+                            <h3 class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400">Zero Loss Active</h3>
+                        </div>
+                        <span class="text-[11px] text-slate-400 truncate block mt-0.5">1-Click Undo always supported</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: Master 1-Click Clean All Action -->
+                <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-5 rounded-[26px] shadow-lg shadow-blue-600/20 flex flex-col justify-between text-white relative overflow-hidden group">
+                    <div class="relative z-10 flex items-center justify-between">
+                        <span class="text-xs font-bold tracking-wide uppercase text-blue-200">Master Action</span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    </div>
+                    <div class="relative z-10 my-1">
+                        <h4 class="font-extrabold text-lg leading-tight">Organize All Files</h4>
+                        <p class="text-xs text-blue-100/90 mt-0.5">Auto-assort all 5 workspaces in 1 click</p>
+                    </div>
+                    <button onclick="cleanAllLocationsMaster(this)" class="relative z-10 w-full py-2.5 px-4 bg-white text-blue-700 font-bold rounded-xl text-xs hover:bg-blue-50 active:scale-95 transition shadow-sm flex items-center justify-center space-x-2 cursor-pointer">
+                        <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                        <span>Clean All Workspaces</span>
+                    </button>
+                    <!-- Background ambient glow circle -->
+                    <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-white/10 rounded-full blur-xl group-hover:scale-125 transition duration-500"></div>
                 </div>
             </div>
 
-            <!-- Locations Cards Compact Grid -->
-            <div id="dashLocationsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Populated dynamically by renderDashboardLocations() -->
+            <!-- Main Content: 2-Column Split (Locations Grid + Connectify Sidebar) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Left 8-9 Columns: Monitored Workspaces Cards Grid -->
+                <div class="lg:col-span-8 xl:col-span-9 space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-3 pb-1">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-bold">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-base text-slate-900 dark:text-white">Monitored Drives & Workspaces</h3>
+                                <p class="text-xs text-slate-400" id="dashStatusSubtitle">All 5 locations monitored &bull; 1-click clean available</p>
+                            </div>
+                        </div>
+
+                        <!-- Location Filter Tabs -->
+                        <div class="inline-flex p-1 bg-slate-200/70 dark:bg-black/40 rounded-xl border border-slate-300/40 dark:border-white/10 text-xs font-medium">
+                            <button id="dashTabAll" onclick="filterDashboardLocations('all')" class="h-7 px-3.5 rounded-lg font-semibold transition bg-blue-600 text-white shadow-sm cursor-pointer">All (5)</button>
+                            <button id="dashTabDesktop" onclick="filterDashboardLocations('desktop')" class="h-7 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">Desktop</button>
+                            <button id="dashTabDownloads" onclick="filterDashboardLocations('downloads')" class="h-7 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">Downloads</button>
+                            <button id="dashTabDocuments" onclick="filterDashboardLocations('documents')" class="h-7 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">Documents</button>
+                            <button id="dashTabDrives" onclick="filterDashboardLocations('drives')" class="h-7 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer">Drives</button>
+                        </div>
+                    </div>
+
+                    <!-- Locations Cards Bento Grid -->
+                    <div id="dashLocationsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Populated dynamically by renderDashboardLocations() -->
+                    </div>
+                </div>
+
+                <!-- Right 3-4 Columns: Connectify Bento Activity & Share Sidebar -->
+                <div class="lg:col-span-4 xl:col-span-3 space-y-4">
+                    <!-- Connectify Share Channels Widget -->
+                    <div class="bg-white/90 dark:bg-[#1a1b22]/90 border border-slate-200/80 dark:border-white/10 rounded-[26px] p-5 shadow-sm space-y-3.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                </div>
+                                <h4 class="font-bold text-sm text-slate-900 dark:text-white">Direct File Share</h4>
+                            </div>
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        </div>
+                        <p class="text-[11px] text-slate-400">Share assorted or loose desktop files directly to external devices & chats.</p>
+
+                        <div class="space-y-2 pt-1">
+                            <!-- Bluetooth -->
+                            <div onclick="triggerShareTarget('bluetooth')" class="p-2.5 rounded-2xl bg-cyan-50/70 dark:bg-cyan-950/30 border border-cyan-200/60 dark:border-cyan-800/30 flex items-center justify-between hover:scale-[1.02] transition cursor-pointer group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-xl bg-cyan-500 text-white flex items-center justify-center text-sm shadow-xs">
+                                        <i class="fa-brands fa-bluetooth-b"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-cyan-950 dark:text-cyan-200">Bluetooth</h5>
+                                        <p class="text-[10px] text-cyan-700/80 dark:text-cyan-400/80">Windows Device Transfer</p>
+                                    </div>
+                                </div>
+                                <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 flex items-center justify-center text-[10px] font-bold">✓</span>
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div onclick="triggerShareTarget('whatsapp')" class="p-2.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/30 flex items-center justify-between hover:scale-[1.02] transition cursor-pointer group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-sm shadow-xs">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-emerald-950 dark:text-emerald-200">WhatsApp</h5>
+                                        <p class="text-[10px] text-emerald-700/80 dark:text-emerald-400/80">WhatsApp Web Share</p>
+                                    </div>
+                                </div>
+                                <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-[10px] font-bold">✓</span>
+                            </div>
+
+                            <!-- Email Client -->
+                            <div onclick="triggerShareTarget('email')" class="p-2.5 rounded-2xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200/60 dark:border-sky-800/30 flex items-center justify-between hover:scale-[1.02] transition cursor-pointer group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-xl bg-sky-500 text-white flex items-center justify-center text-sm shadow-xs">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-sky-950 dark:text-sky-200">Email Draft</h5>
+                                        <p class="text-[10px] text-sky-700/80 dark:text-sky-400/80">Default Mail Client</p>
+                                    </div>
+                                </div>
+                                <span class="w-5 h-5 rounded-full bg-sky-500/20 text-sky-700 dark:text-sky-300 flex items-center justify-center text-[10px] font-bold">✓</span>
+                            </div>
+
+                            <!-- Explorer -->
+                            <div onclick="openSortedFolderInExplorer()" class="p-2.5 rounded-2xl bg-purple-50/70 dark:bg-purple-950/30 border border-purple-200/60 dark:border-purple-800/30 flex items-center justify-between hover:scale-[1.02] transition cursor-pointer group">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-xl bg-purple-500 text-white flex items-center justify-center text-sm shadow-xs">
+                                        <i class="fa-solid fa-folder-open"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-purple-950 dark:text-purple-200">Explorer</h5>
+                                        <p class="text-[10px] text-purple-700/80 dark:text-purple-400/80">Open Sorted Directory</p>
+                                    </div>
+                                </div>
+                                <span class="w-5 h-5 rounded-full bg-purple-500/20 text-purple-700 dark:text-purple-300 flex items-center justify-center text-[10px] font-bold">✓</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Recognition Engine Preview -->
+                    <div class="bg-white/90 dark:bg-[#1a1b22]/90 border border-slate-200/80 dark:border-white/10 rounded-[26px] p-5 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-xs uppercase tracking-wider text-slate-400">Assortment Intelligence</h4>
+                            <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">Active</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="p-2.5 rounded-xl bg-[#e4f6b6] dark:bg-lime-950/40 text-lime-950 dark:text-lime-200 flex items-center space-x-2">
+                                <span class="text-sm">🎨</span>
+                                <span class="font-bold text-[11px]">Design (PSD/AI)</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-[#bbf2e8] dark:bg-teal-950/40 text-teal-950 dark:text-teal-200 flex items-center space-x-2">
+                                <span class="text-sm">🥐</span>
+                                <span class="font-bold text-[11px]">Images</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-[#e2c8f8] dark:bg-purple-950/40 text-purple-950 dark:text-purple-200 flex items-center space-x-2">
+                                <span class="text-sm">📺</span>
+                                <span class="font-bold text-[11px]">Videos</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-[#c8c7d8] dark:bg-slate-800 text-slate-900 dark:text-slate-200 flex items-center space-x-2">
+                                <span class="text-sm">🔬</span>
+                                <span class="font-bold text-[11px]">Documents</span>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 pt-1 leading-relaxed">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-500 mr-1"></i>
+                            Unfamiliar extensions auto-create their own categorized folders automatically.
+                        </p>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -2535,20 +2716,21 @@
 
             if (!locations || locations.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full py-12 text-center text-slate-400">
-                        <i class="fa-solid fa-folder-open text-2xl mb-1.5"></i>
-                        <p class="text-xs font-semibold">No locations found for this filter.</p>
+                    <div class="col-span-full py-16 text-center text-slate-400 bg-white/60 dark:bg-[#1a1b22]/60 rounded-[28px] border border-dashed border-slate-200 dark:border-white/10">
+                        <i class="fa-solid fa-folder-open text-3xl mb-2 text-slate-300 dark:text-slate-600"></i>
+                        <p class="text-sm font-bold text-slate-700 dark:text-slate-300">No locations found for this filter.</p>
+                        <p class="text-xs text-slate-400 mt-1">Select "All" to view all active monitored drives and folders.</p>
                     </div>`;
                 return;
             }
 
             container.innerHTML = locations.map(loc => {
                 const colorMap = {
-                    amber: { bg: 'bg-amber-500/15', border: 'border-amber-500/30', text: 'text-amber-500' },
-                    cyan: { bg: 'bg-cyan-500/15', border: 'border-cyan-500/30', text: 'text-cyan-500' },
-                    purple: { bg: 'bg-purple-500/15', border: 'border-purple-500/30', text: 'text-purple-500' },
-                    blue: { bg: 'bg-blue-500/15', border: 'border-blue-500/30', text: 'text-blue-500' },
-                    emerald: { bg: 'bg-emerald-500/15', border: 'border-emerald-500/30', text: 'text-emerald-500' },
+                    amber: { bg: 'bg-amber-500/15', border: 'border-amber-500/30', text: 'text-amber-500', bar: 'from-amber-500 to-orange-500' },
+                    cyan: { bg: 'bg-cyan-500/15', border: 'border-cyan-500/30', text: 'text-cyan-500', bar: 'from-cyan-500 to-teal-500' },
+                    purple: { bg: 'bg-purple-500/15', border: 'border-purple-500/30', text: 'text-purple-500', bar: 'from-purple-500 to-indigo-500' },
+                    blue: { bg: 'bg-blue-500/15', border: 'border-blue-500/30', text: 'text-blue-500', bar: 'from-blue-500 to-indigo-600' },
+                    emerald: { bg: 'bg-emerald-500/15', border: 'border-emerald-500/30', text: 'text-emerald-500', bar: 'from-emerald-500 to-teal-600' },
                 };
                 const color = colorMap[loc.color] || colorMap.blue;
 
@@ -2556,13 +2738,13 @@
                 if (loc.is_drive && loc.drive_info) {
                     const di = loc.drive_info;
                     driveMeterHtml = `
-                        <div class="space-y-1 pt-1">
-                            <div class="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
-                                <span>Drive Storage</span>
-                                <span class="font-mono">${di.free_gb} GB free / ${di.total_gb} GB</span>
+                        <div class="space-y-1.5 pt-2">
+                            <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                                <span class="font-semibold">Disk Space Utilization</span>
+                                <span class="font-mono font-bold text-slate-700 dark:text-slate-300">${di.free_gb} GB free / ${di.total_gb} GB (${di.used_percent}%)</span>
                             </div>
-                            <div class="w-full bg-slate-200 dark:bg-white/10 h-1.5 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style="width: ${di.used_percent}%"></div>
+                            <div class="w-full bg-slate-100 dark:bg-white/10 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200/60 dark:border-white/5">
+                                <div class="h-full bg-gradient-to-r ${color.bar} rounded-full transition-all duration-500 shadow-xs" style="width: ${di.used_percent}%"></div>
                             </div>
                         </div>`;
                 }
@@ -2571,48 +2753,88 @@
                 const subfolderText = `${loc.subfolder_count || 0} subfolders`;
 
                 return `
-                    <div class="glass-card rounded-2xl p-4 border border-slate-200/80 dark:border-white/10 shadow-sm hover:shadow-md hover:border-blue-500/40 transition-all flex flex-col justify-between bg-white/70 dark:bg-[#202127]/80 backdrop-blur-md">
-                        <div class="space-y-2.5">
+                    <div class="bg-white/95 dark:bg-[#1a1b22]/95 rounded-[28px] p-6 border border-slate-200/90 dark:border-white/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+                        <div class="space-y-4">
                             <!-- Card Header -->
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2.5">
-                                    <div class="w-9 h-9 rounded-xl ${color.bg} ${color.border} border flex items-center justify-center ${color.text} text-sm shrink-0">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-center space-x-3.5 min-w-0">
+                                    <div class="w-12 h-12 rounded-2xl ${color.bg} ${color.border} border flex items-center justify-center ${color.text} text-xl shrink-0 shadow-xs group-hover:scale-105 transition">
                                         <i class="${loc.icon}"></i>
                                     </div>
-                                    <div class="leading-tight">
-                                        <div class="flex items-center space-x-1.5">
-                                            <span class="font-bold text-sm text-slate-900 dark:text-white">${loc.name}</span>
-                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-semibold bg-slate-200/70 dark:bg-white/10 text-slate-500 dark:text-slate-400">${loc.badge}</span>
+                                    <div class="min-w-0 leading-tight">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="font-extrabold text-base text-slate-900 dark:text-white truncate">${loc.name}</span>
+                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 shrink-0">${loc.badge}</span>
                                         </div>
-                                        <span class="text-[10px] text-slate-400 font-mono truncate max-w-[170px] inline-block" title="${loc.path}">${loc.path}</span>
+                                        <span class="text-[11px] text-slate-400 font-mono truncate block mt-1" title="${loc.path}">${loc.path}</span>
                                     </div>
                                 </div>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${loc.file_count > 0 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'}">
+                                
+                                <span class="px-3 py-1 rounded-full text-xs font-mono font-bold whitespace-nowrap shrink-0 shadow-xs ${loc.file_count > 0 ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30' : 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'}">
                                     ${fileCountText}
                                 </span>
                             </div>
 
                             ${driveMeterHtml}
 
-                            <div class="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
-                                <span><i class="fa-solid fa-folder-tree text-[10px] mr-1"></i>${subfolderText}</span>
-                                <span><i class="fa-solid fa-box-archive text-[10px] mr-1 text-amber-500"></i>${loc.dest_name}/</span>
+                            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1.5 border-t border-slate-100 dark:border-white/5">
+                                <span class="flex items-center"><i class="fa-solid fa-folder-tree text-[11px] mr-1.5 text-blue-500"></i>${subfolderText}</span>
+                                <span class="flex items-center font-mono"><i class="fa-solid fa-box-archive text-[11px] mr-1.5 text-amber-500"></i>${loc.dest_name}/</span>
                             </div>
                         </div>
 
-                        <!-- Card Actions -->
-                        <div class="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-white/10 grid grid-cols-2 gap-2">
-                            <button onclick="cleanLocationDirect('${loc.id}', this)" class="h-8 px-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm active:scale-95 transition flex items-center justify-center space-x-1.5 cursor-pointer" title="Auto-assort in 1 click">
-                                <i class="fa-solid fa-broom text-[10px]"></i>
+                        <!-- Card Action Buttons -->
+                        <div class="mt-5 pt-4 border-t border-slate-100 dark:border-white/10 grid grid-cols-2 gap-3">
+                            <button onclick="cleanLocationDirect('${loc.id}', this)" class="h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-500/20 active:scale-95 transition flex items-center justify-center space-x-2 cursor-pointer" title="Auto-assort in 1 click">
+                                <i class="fa-solid fa-broom text-xs"></i>
                                 <span>1-Click Clean</span>
                             </button>
-                            <button onclick="navigateToPage('studio', '${loc.id}')" class="h-8 px-2.5 rounded-xl bg-slate-200/70 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/15 text-slate-800 dark:text-white font-semibold text-xs active:scale-95 transition flex items-center justify-center space-x-1 cursor-pointer border border-slate-300/40 dark:border-white/10" title="Inspect files">
+                            <button onclick="navigateToPage('studio', '${loc.id}')" class="h-10 px-4 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-800 dark:text-white font-bold text-xs active:scale-95 transition flex items-center justify-center space-x-1.5 cursor-pointer border border-slate-200/80 dark:border-white/10 group" title="Inspect files in Studio">
                                 <span>Open Studio</span>
-                                <i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i>
+                                <i class="fa-solid fa-arrow-right text-[10px] opacity-60 group-hover:translate-x-1 transition"></i>
                             </button>
                         </div>
-                    </div>`;
+                    </div>
+                `;
             }).join('');
+        }
+
+        async function cleanAllLocationsMaster(btnElement) {
+            if (!cachedDashboardLocations || cachedDashboardLocations.length === 0) {
+                showToast("No locations available to clean", "info");
+                return;
+            }
+            const origHtml = btnElement ? btnElement.innerHTML : '';
+            if (btnElement) {
+                btnElement.disabled = true;
+                btnElement.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs mr-2"></i><span>Cleaning all 5 workspaces...</span>`;
+            }
+            try {
+                let totalCleaned = 0;
+                for (const loc of cachedDashboardLocations) {
+                    if ((loc.file_count || 0) > 0) {
+                        const res = await fetch('/api/clean-location', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ source: loc.path, dest: loc.dest_path })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            totalCleaned += (data.count || 0);
+                        }
+                    }
+                }
+                showToast(`Successfully organized ${totalCleaned} files across all workspaces!`, 'success');
+                await loadDashboardSummary();
+            } catch (err) {
+                console.error("Master clean error:", err);
+                showToast("Master clean encountered an issue: " + err.message, 'error');
+            } finally {
+                if (btnElement) {
+                    btnElement.disabled = false;
+                    btnElement.innerHTML = origHtml;
+                }
+            }
         }
 
         async function cleanLocationDirect(locId, btnElement) {
