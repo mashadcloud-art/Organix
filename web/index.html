@@ -77,13 +77,13 @@
     <!-- ============================================================= -->
     <!-- CINEMATIC APP OPENER SPLASH OVERLAY                           -->
     <!-- ============================================================= -->
-    <div id="appSplashOverlay" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl transition-all duration-700 select-none overflow-hidden">
+    <div id="appSplashOverlay" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white backdrop-blur-3xl transition-all duration-700 select-none overflow-hidden">
         <!-- Ambient Glowing Background Orbs -->
         <div class="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/25 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
         <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-600/25 rounded-full blur-[100px] pointer-events-none animate-pulse" style="animation-delay: 1s;"></div>
 
         <!-- Skip Intro Button -->
-        <button onclick="dismissAppOpener()" class="absolute top-6 right-6 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white border border-white/10 text-xs font-semibold backdrop-blur-md transition-all active:scale-95 flex items-center space-x-2 z-20 cursor-pointer shadow-lg">
+        <button onclick="dismissAppOpener()" class="absolute top-6 right-6 px-4 py-2 rounded-full bg-slate-900/5 hover:bg-slate-900/10 text-slate-700 hover:text-slate-900 border border-slate-300/80 text-xs font-semibold backdrop-blur-md transition-all active:scale-95 flex items-center space-x-2 z-20 cursor-pointer shadow-sm">
             <span>Skip Intro</span>
             <i class="fa-solid fa-chevron-right text-[10px]"></i>
         </button>
@@ -112,31 +112,31 @@
                 <div class="flex items-center justify-center space-x-3">
                     <img src="/app_icon.png" class="w-10 h-10 rounded-xl object-contain bg-amber-500/10 p-1 border border-amber-500/30 shadow-lg shadow-amber-500/30" alt="App Icon">
                     <div class="text-left">
-                        <h1 class="text-lg font-bold tracking-tight text-white leading-tight">
-                            Organix <span class="text-amber-400">Pro</span>
+                        <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-tight">
+                            Organix <span class="text-amber-500">Pro</span>
                         </h1>
-                        <p class="text-[11px] text-white/60">High-Performance File Organization &bull; Studio Edition</p>
+                        <p class="text-[11px] text-slate-500 font-medium">High-Performance File Organization &bull; Studio Edition</p>
                     </div>
                 </div>
 
-                <!-- Ant Walking Progress Bar in Opener / Splash -->
-                <div class="w-full max-w-md mx-auto relative pt-8 pb-1 select-none">
-                    <!-- Ants Stage Overlay -->
-                    <div id="openerAntStage" class="absolute inset-x-0 top-0 h-14 pointer-events-none overflow-visible">
-                        <img id="openerAntImg" src="/ant/1-ant.png" alt="Walking Ant" 
-                             class="absolute pointer-events-none select-none transition-transform duration-100 ease-linear" 
-                             style="width: 48px; height: 48px; top: -10px; left: 0%; transform: translateX(-78%); object-fit: contain; z-index: 10; filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));">
+                <!-- Ant Walking Progress Bar in Opener / Splash (Ant INSIDE the Box) -->
+                <div class="w-full max-w-md mx-auto relative select-none">
+                    <!-- Progress Bar Box (Ant walks INSIDE the box) -->
+                    <div class="relative w-full h-9 bg-slate-100 rounded-full overflow-hidden border border-slate-300 shadow-inner p-0.5">
+                        <!-- Orange Progress Fill inside the box -->
+                        <div id="openerProgressBar" class="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 rounded-full transition-all duration-150 shadow-sm shadow-amber-500/25" style="width: 0%;"></div>
+                        
+                        <!-- Ant INSIDE THE BOX, walking at the leading edge of orange fill -->
+                        <div id="openerAntStage" class="absolute inset-0 pointer-events-none overflow-hidden">
+                            <img id="openerAntImg" src="/ant/1-ant.png" alt="Walking Ant" 
+                                 class="absolute pointer-events-none select-none transition-transform duration-100 ease-linear" 
+                                 style="width: 32px; height: 32px; top: 50%; transform: translateY(-50%) translateX(-78%); left: 0%; object-fit: contain; z-index: 10;">
+                        </div>
                     </div>
                     
-                    <!-- Track Bar Background (White / Light Track for optimal contrast) -->
-                    <div class="relative w-full h-3.5 bg-white/90 rounded-full overflow-hidden border border-white/30 shadow-inner">
-                        <!-- Glow Fill Behind the Ant -->
-                        <div id="openerProgressBar" class="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 rounded-full transition-all duration-150 shadow-sm shadow-amber-500/30" style="width: 0%;"></div>
-                    </div>
-                    
-                    <div class="flex items-center justify-between text-[11px] text-white/70 font-mono mt-2 px-1">
-                        <span id="openerStatusText" class="truncate">Loading smart file engine...</span>
-                        <span id="openerPercentText" class="font-bold text-amber-400 font-mono">0%</span>
+                    <div class="flex items-center justify-between text-[11px] text-slate-600 font-mono mt-2 px-1">
+                        <span id="openerStatusText" class="truncate font-medium">Loading smart file engine...</span>
+                        <span id="openerPercentText" class="font-bold text-amber-600 font-mono">0%</span>
                     </div>
                 </div>
             </div>

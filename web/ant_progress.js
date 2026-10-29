@@ -3,9 +3,8 @@
  * ========================================
  * Cycles 8 transparent PNG frames (1-ant.png -> 8-ant.png) at ~10 FPS (100ms)
  * Continuous walking animation across a glowing progress track.
+ * The Ant is housed INSIDE THE PROGRESS BOX, walking directly at the leading edge of the orange fill!
  * Supports single or multi-ant marching.
- * High-contrast white track background and white rim glow ensures 100% visibility.
- * Positioned right at the leading end of the orange progress bar.
  */
 class OrganixAntProgressBar {
     constructor(options = {}) {
@@ -14,7 +13,7 @@ class OrganixAntProgressBar {
             : (options.container || document.body);
             
         this.numAnts = options.numAnts || 1;
-        this.antSize = options.antSize || 52; // px width
+        this.antSize = options.antSize || 32; // px width & height inside box
         this.fps = options.fps || 10; // 10 fps (~100ms)
         this.frameInterval = 1000 / this.fps;
         
@@ -73,21 +72,21 @@ class OrganixAntProgressBar {
                 <span class="font-mono font-extrabold text-sm text-amber-500 dark:text-amber-400 organix-progress-percent">0%</span>
             </div>
             
-            <!-- Progress Track Container with relative positioning for walking ant -->
-            <div class="relative w-full pt-10 pb-1">
-                <!-- Ants Stage Overlay -->
-                <div class="organix-ants-stage absolute inset-x-0 top-0 h-14 pointer-events-none overflow-visible">
-                    <!-- Ant element(s) inserted here -->
-                </div>
-                
-                <!-- Track Bar Background (Crisp White / Light Track for optimal contrast) -->
-                <div class="organix-progress-track relative w-full h-3.5 bg-white/90 dark:bg-white/85 rounded-full overflow-hidden border border-slate-300 dark:border-white/30 shadow-inner">
+            <!-- Progress Track Container: Ant walks INSIDE this box -->
+            <div class="relative w-full py-1">
+                <!-- Track Bar Box (Ant walks INSIDE this box) -->
+                <div class="organix-progress-track relative w-full h-9 bg-slate-100 dark:bg-slate-800/80 rounded-full overflow-hidden border border-slate-300 dark:border-white/20 shadow-inner p-0.5">
                     <!-- Glow Fill Behind the Ant -->
-                    <div class="organix-progress-fill h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 rounded-full transition-all duration-150 ease-out shadow-sm shadow-amber-500/30" style="width: 0%"></div>
+                    <div class="organix-progress-fill h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 rounded-full transition-all duration-150 ease-out shadow-sm shadow-amber-500/20" style="width: 0%"></div>
+                    
+                    <!-- Ants Stage Overlay INSIDE THE BOX -->
+                    <div class="organix-ants-stage absolute inset-0 pointer-events-none overflow-hidden">
+                        <!-- Ant element(s) inserted here INSIDE THE BOX -->
+                    </div>
                 </div>
             </div>
             
-            <div class="flex items-center justify-between text-[11px] text-slate-400 mt-2 font-mono">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-mono">
                 <span class="organix-progress-status truncate max-w-xs sm:max-w-md font-medium text-slate-600 dark:text-slate-300">Organix Engine Ready...</span>
                 <span class="organix-progress-eta text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center space-x-1">
                     <i class="fa-solid fa-shield-halved text-[9px]"></i>
@@ -105,7 +104,7 @@ class OrganixAntProgressBar {
         this.stage = this.wrapper.querySelector('.organix-ants-stage');
         this.track = this.wrapper.querySelector('.organix-progress-track');
         
-        // Create Ant DOM Elements with White Rim Glow & positioned at end of orange progress
+        // Create Ant DOM Elements INSIDE THE BOX
         this.ants.forEach(ant => {
             const antImg = document.createElement('img');
             antImg.src = this.frames[ant.frameIndex];
@@ -113,14 +112,11 @@ class OrganixAntProgressBar {
             antImg.className = "absolute pointer-events-none select-none transition-transform duration-100 ease-linear";
             antImg.style.width = `${this.antSize}px`;
             antImg.style.height = `${this.antSize}px`;
-            antImg.style.top = `-12px`; // sits precisely with feet on track
+            antImg.style.top = `50%`;
+            antImg.style.transform = `translateY(-50%) translateX(-78%)`;
             antImg.style.left = `0%`;
-            // Position ant at the leading end of the orange progress (leading the progress line)
-            antImg.style.transform = `translateX(-78%)`;
             antImg.style.objectFit = 'contain';
             antImg.style.zIndex = '10';
-            // Crisp White Backlight Rim Glow for 100% visibility on all backgrounds:
-            antImg.style.filter = "drop-shadow(0 0 3px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(245, 158, 11, 0.6))";
             this.stage.appendChild(antImg);
             ant.element = antImg;
         });
@@ -134,7 +130,7 @@ class OrganixAntProgressBar {
     }
     
     tick() {
-        // Continuous cycle through frames 0 -> 7 -> 0 (always walking even when progress is stationary)
+        // Continuous cycle through frames 0 -> 7 -> 0
         this.ants.forEach(ant => {
             ant.frameIndex = (ant.frameIndex + 1) % this.frames.length;
             if (ant.element) {
@@ -164,8 +160,7 @@ class OrganixAntProgressBar {
             this.percentText.textContent = `${Math.round(p)}%`;
         }
         
-        // Update Ant position:
-        // Positioned at the end of the orange progress
+        // Update Ant position inside the box
         this.ants.forEach(ant => {
             if (ant.element) {
                 const antP = Math.max(0, Math.min(100, p + ant.offsetPercent));
@@ -205,12 +200,11 @@ class OrganixAntProgressBar {
             antImg.className = "absolute pointer-events-none select-none transition-transform duration-100 ease-linear";
             antImg.style.width = `${this.antSize}px`;
             antImg.style.height = `${this.antSize}px`;
-            antImg.style.top = `-12px`;
+            antImg.style.top = `50%`;
+            antImg.style.transform = `translateY(-50%) translateX(-78%)`;
             antImg.style.left = `0%`;
-            antImg.style.transform = `translateX(-78%)`;
             antImg.style.objectFit = 'contain';
             antImg.style.zIndex = '10';
-            antImg.style.filter = "drop-shadow(0 0 3px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(245, 158, 11, 0.6))";
             
             this.stage.appendChild(antImg);
             ant.element = antImg;
