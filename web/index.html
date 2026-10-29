@@ -119,14 +119,24 @@
                     </div>
                 </div>
 
-                <!-- Animated Progress Bar -->
-                <div class="w-full max-w-md mx-auto space-y-1.5">
-                    <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden p-0.5 border border-white/5">
-                        <div id="openerProgressBar" class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full transition-all duration-150" style="width: 0%;"></div>
+                <!-- Ant Walking Progress Bar in Opener / Splash -->
+                <div class="w-full max-w-md mx-auto relative pt-8 pb-1 select-none">
+                    <!-- Ants Stage Overlay -->
+                    <div id="openerAntStage" class="absolute inset-x-0 top-0 h-14 pointer-events-none overflow-visible">
+                        <img id="openerAntImg" src="/ant/1-ant.png" alt="Walking Ant" 
+                             class="absolute pointer-events-none select-none drop-shadow-xl transition-transform duration-100 ease-linear" 
+                             style="width: 48px; height: 48px; top: -10px; left: 0%; transform: translateX(-50%); object-fit: contain; z-index: 10;">
                     </div>
-                    <div class="flex items-center justify-between text-[10px] text-white/50 font-mono px-1">
-                        <span id="openerStatusText">Loading smart file engine...</span>
-                        <span id="openerPercentText">0%</span>
+                    
+                    <!-- Track Bar Background -->
+                    <div class="relative w-full h-3 bg-white/15 rounded-full overflow-hidden border border-white/10 shadow-inner">
+                        <!-- Glow Fill Behind the Ant -->
+                        <div id="openerProgressBar" class="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 rounded-full transition-all duration-150 shadow-sm shadow-amber-500/30" style="width: 0%;"></div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between text-[11px] text-white/70 font-mono mt-2 px-1">
+                        <span id="openerStatusText" class="truncate">Loading smart file engine...</span>
+                        <span id="openerPercentText" class="font-bold text-amber-400 font-mono">0%</span>
                     </div>
                 </div>
             </div>
@@ -2567,19 +2577,49 @@
         // =========================================================================
         let openerDismissed = false;
 
+        // Ant walking frames for opener
+        const openerAntFrames = [
+            '/ant/1-ant.png',
+            '/ant/2-ant.png',
+            '/ant/3-ant.png',
+            '/ant/4-ant.png',
+            '/ant/5-ant.png',
+            '/ant/6-ant.png',
+            '/ant/7-ant.png',
+            '/ant/8-ant.png'
+        ];
+        let openerAntFrameIndex = 0;
+        let openerAntWalkTimer = null;
+
+        function startOpenerAntAnimation() {
+            if (openerAntWalkTimer) clearInterval(openerAntWalkTimer);
+            openerAntWalkTimer = setInterval(() => {
+                openerAntFrameIndex = (openerAntFrameIndex + 1) % openerAntFrames.length;
+                const antImg = document.getElementById('openerAntImg');
+                if (antImg) {
+                    antImg.src = openerAntFrames[openerAntFrameIndex];
+                }
+            }, 100); // 10 FPS continuous walking cycle
+        }
+
         function initAppOpener() {
             const overlay = document.getElementById('appSplashOverlay');
             const video = document.getElementById('appOpenerVideo');
             const progressBar = document.getElementById('openerProgressBar');
             const statusText = document.getElementById('openerStatusText');
             const percentText = document.getElementById('openerPercentText');
+            const antImg = document.getElementById('openerAntImg');
             if (!overlay || !video) return;
+
+            // Start continuous ant walking legs cycle
+            startOpenerAntAnimation();
 
             video.addEventListener('timeupdate', () => {
                 if (video.duration && !isNaN(video.duration)) {
                     const percent = Math.min(100, Math.round((video.currentTime / video.duration) * 100));
                     if (progressBar) progressBar.style.width = percent + '%';
                     if (percentText) percentText.innerText = percent + '%';
+                    if (antImg) antImg.style.left = percent + '%';
 
                     if (percent < 30) {
                         if (statusText) statusText.innerText = 'Scanning desktop & directories...';
@@ -2633,10 +2673,13 @@
             const overlay = document.getElementById('appSplashOverlay');
             const video = document.getElementById('appOpenerVideo');
             const progressBar = document.getElementById('openerProgressBar');
+            const antImg = document.getElementById('openerAntImg');
             if (!overlay || !video) return;
 
+            startOpenerAntAnimation();
             overlay.classList.remove('hidden', 'opacity-0', 'pointer-events-none', 'scale-105');
             if (progressBar) progressBar.style.width = '0%';
+            if (antImg) antImg.style.left = '0%';
             video.currentTime = 0;
             video.play().catch(() => {});
         }
