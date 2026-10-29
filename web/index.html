@@ -71,6 +71,7 @@
         ::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.25); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.4); }
     </style>
+    <script src="/ant_progress.js"></script>
 </head>
 <body class="w-screen h-screen overflow-hidden m-0 p-0 bg-slate-100 dark:bg-[#18191c] text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-200" onclick="handleGlobalClick(event)">
     <!-- ============================================================= -->
@@ -284,6 +285,28 @@
 
                 <!-- Right 3-4 Columns: Connectify Bento Activity & Share Sidebar -->
                 <div class="lg:col-span-4 xl:col-span-3 space-y-4">
+                    <!-- Custom Ant Walking Progress Widget -->
+                    <div class="bg-white/90 dark:bg-[#1a1b22]/90 border border-slate-200/80 dark:border-white/10 rounded-[26px] p-5 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center text-sm">
+                                    🐜
+                                </div>
+                                <h4 class="font-bold text-sm text-slate-900 dark:text-white">Organix Ant Engine</h4>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold font-mono">10 FPS</span>
+                        </div>
+                        <div id="hubAntProgressMount" class="pt-1 pb-1"></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <button onclick="testHubAntWalk()" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-white text-xs font-bold transition flex items-center space-x-1.5 active:scale-95 shadow-sm shadow-amber-500/20 cursor-pointer">
+                                <span>▶ Test Ant Walk</span>
+                            </button>
+                            <button onclick="toggleHubMultiAnts()" id="btnHubMultiAnts" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 text-xs font-medium transition cursor-pointer">
+                                <span>Multiple Ants</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Connectify Share Channels Widget -->
                     <div class="bg-white/90 dark:bg-[#1a1b22]/90 border border-slate-200/80 dark:border-white/10 rounded-[26px] p-5 shadow-sm space-y-3.5">
                         <div class="flex items-center justify-between">
@@ -1194,6 +1217,7 @@
             await fetchLocations();
             await fetchState();
             await loadDashboardSummary();
+            initHubAntWidget();
             await triggerScan();
             await loadAssortedFiles();
         });
@@ -2360,7 +2384,12 @@
         }
 
         async function organizeItems(items) {
-            showToast(`Moving ${items.length} file(s) into ${currentDest.split('\\').pop()}...`);
+            if (window.OrganixAntModal) {
+                OrganixAntModal.show("Organix File Organizer", `Moving ${items.length} file(s) into ${currentDest.split('\\').pop()}...`);
+                OrganixAntModal.update(40, `Sorting ${items.length} file(s) into categorized folders...`);
+            } else {
+                showToast(`Moving ${items.length} file(s) into ${currentDest.split('\\').pop()}...`);
+            }
             try {
                 const res = await fetch('/api/organize', {
                     method: 'POST',
@@ -2369,6 +2398,10 @@
                 });
                 const data = await res.json();
                 if (data.success) {
+                    if (window.OrganixAntModal) {
+                        OrganixAntModal.update(100, `Done! Organized ${data.moved.length} file(s)!`);
+                        OrganixAntModal.hide(850);
+                    }
                     showToast(`Successfully organized ${data.moved.length} file(s)!`);
                     selectedFilePaths.clear();
                     updateSelectionUI();
@@ -2628,6 +2661,7 @@
                 if (studioView) studioView.classList.add('hidden');
                 if (dashView) dashView.classList.remove('hidden');
                 loadDashboardSummary();
+            initHubAntWidget();
             } else if (page === 'studio') {
                 if (dashView) dashView.classList.add('hidden');
                 if (studioView) studioView.classList.remove('hidden');
@@ -2810,8 +2844,17 @@
                 btnElement.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs mr-2"></i><span>Cleaning all 5 workspaces...</span>`;
             }
             try {
+                if (window.OrganixAntModal) {
+                    OrganixAntModal.show("Master Workspace Organization", "Starting 1-click clean across 5 drives...");
+                }
                 let totalCleaned = 0;
-                for (const loc of cachedDashboardLocations) {
+                const totalLocs = cachedDashboardLocations.length;
+                for (let i = 0; i < totalLocs; i++) {
+                    const loc = cachedDashboardLocations[i];
+                    const pct = Math.round(((i + 0.3) / totalLocs) * 90);
+                    if (window.OrganixAntModal) {
+                        OrganixAntModal.update(pct, `Organizing ${loc.name} (${loc.file_count || 0} files)...`);
+                    }
                     if ((loc.file_count || 0) > 0) {
                         const res = await fetch('/api/clean-location', {
                             method: 'POST',
@@ -2824,8 +2867,13 @@
                         }
                     }
                 }
+                if (window.OrganixAntModal) {
+                    OrganixAntModal.update(100, `Done! Organized ${totalCleaned} files across all workspaces!`);
+                    OrganixAntModal.hide(1000);
+                }
                 showToast(`Successfully organized ${totalCleaned} files across all workspaces!`, 'success');
                 await loadDashboardSummary();
+            initHubAntWidget();
             } catch (err) {
                 console.error("Master clean error:", err);
                 showToast("Master clean encountered an issue: " + err.message, 'error');
@@ -2848,6 +2896,10 @@
             }
 
             try {
+                if (window.OrganixAntModal) {
+                    OrganixAntModal.show(`Organizing ${loc.name}`, `Assorting files into ${loc.dest_name}/...`);
+                    OrganixAntModal.update(35, `Scanning and categorizing files in ${loc.name}...`);
+                }
                 const res = await fetch('/api/clean-location', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -2859,9 +2911,14 @@
 
                 const data = await res.json();
                 if (data.success) {
+                    if (window.OrganixAntModal) {
+                        OrganixAntModal.update(100, `Complete! Organized ${data.count || 0} files.`);
+                        OrganixAntModal.hide(900);
+                    }
                     showToast(data.message || `Cleaned ${data.count || 0} files successfully!`, 'success');
                     // Refresh summary stats
                     await loadDashboardSummary();
+            initHubAntWidget();
                 } else {
                     showToast(data.error || 'Clean operation failed', 'error');
                 }

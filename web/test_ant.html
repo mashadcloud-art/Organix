@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>Organix Ant Walking Progress Bar Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #131418; color: #fff; }
+    </style>
+</head>
+<body class="p-8 lg:p-12 flex flex-col items-center justify-center min-h-screen space-y-8 select-none">
+    
+    <div class="text-center space-y-2">
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold">
+            <span>Organix Animation Engine</span>
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-tight">Ant Walking Progress Bar</h1>
+        <p class="text-sm text-slate-400 max-w-lg">8-frame walking cycle (10 FPS) smoothly traversing from 0% to 100% with real-time fill</p>
+    </div>
+
+    <!-- Main Demonstration Card -->
+    <div class="w-full max-w-xl bg-white/5 border border-white/10 p-7 rounded-[32px] shadow-2xl backdrop-blur-md space-y-6">
+        <div id="demoProgressMount"></div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="flex flex-wrap items-center justify-center gap-2 max-w-xl">
+        <button onclick="demoBar.setProgress(0, '0% • Far left starting position')" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold transition">0%</button>
+        <button onclick="demoBar.setProgress(25, '25% • Walking smoothly across bar')" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold transition">25%</button>
+        <button onclick="demoBar.setProgress(50, '50% • Center of progress bar')" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold transition">50%</button>
+        <button onclick="demoBar.setProgress(75, '75% • Approaching completion')" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold transition">75%</button>
+        <button onclick="demoBar.setProgress(100, '100% • Far right goal reached')" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold transition">100%</button>
+        <button onclick="startSimulatedOrganize()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 font-extrabold text-xs text-white shadow-lg shadow-amber-500/20 active:scale-95 transition">
+            ▶ Simulate 1-Click File Assort
+        </button>
+        <button onclick="toggleMultiAnts()" id="btnMultiAnts" class="px-4 py-2 rounded-xl bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/30 text-xs font-bold transition">
+            👥 Toggle Multiple Ants
+        </button>
+    </div>
+
+    <script src="/ant_progress.js"></script>
+    <script>
+        const demoBar = new OrganixAntProgressBar({
+            container: document.getElementById('demoProgressMount'),
+            antSize: 52,
+            fps: 10
+        });
+        demoBar.setTitle("Organix Pro • Desktop File Assortment");
+        demoBar.setProgress(20, "20% • Scanning loose files on Desktop...");
+
+        let simTimer = null;
+        function startSimulatedOrganize() {
+            if (simTimer) clearInterval(simTimer);
+            let p = 0;
+            demoBar.setProgress(0, "0% • Initiating file engine...");
+            simTimer = setInterval(() => {
+                p += 2;
+                if (p <= 30) {
+                    demoBar.setProgress(p, `${p}% • Scanning Photoshop .psd & creative assets...`);
+                } else if (p <= 70) {
+                    demoBar.setProgress(p, `${p}% • Assorting into Design/ & dynamic folders...`);
+                } else if (p < 100) {
+                    demoBar.setProgress(p, `${p}% • Verifying zero-loss undo snapshot...`);
+                } else {
+                    clearInterval(simTimer);
+                    demoBar.setProgress(100, "100% • Done! 102 files organized into Sorted Files/");
+                }
+            }, 80);
+        }
+
+        let multiAntsActive = false;
+        function toggleMultiAnts() {
+            multiAntsActive = !multiAntsActive;
+            demoBar.setAntCount(multiAntsActive ? 3 : 1);
+            document.getElementById('btnMultiAnts').textContent = multiAntsActive ? '👤 Single Ant Mode' : '👥 Toggle Multiple Ants';
+        }
+    </script>
+</body>
+</html>
