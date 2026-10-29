@@ -167,9 +167,9 @@
 
             <!-- Right Toolbar: Auto-Update Pill, Theme, Settings -->
             <div class="flex items-center space-x-1.5">
-                <button onclick="checkAppUpdate(true)" id="btnDashUpdate" class="h-7 px-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 cursor-pointer" title="Organix v1.2.0 • Click to check updates">
+                <button onclick="checkAppUpdate(true)" id="btnDashUpdate" class="h-7 px-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 cursor-pointer" title="Organix v1.3.0 • Click to check updates">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span>v1.2.0</span>
+                    <span>v1.3.0</span>
                 </button>
                 <button onclick="loadDashboardSummary()" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-blue-500 cursor-pointer" title="Refresh Stats">
                     <i class="fa-solid fa-rotate-right text-xs"></i>
@@ -298,9 +298,9 @@
 
         <!-- Right: Auto-Update Pill + Tools -->
         <div class="flex items-center space-x-1.5">
-            <button onclick="checkAppUpdate(true)" id="btnHeaderUpdate" class="h-7 px-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 cursor-pointer" title="Organix v1.2.0 • Click to check updates">
+            <button onclick="checkAppUpdate(true)" id="btnHeaderUpdate" class="h-7 px-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 cursor-pointer" title="Organix v1.3.0 • Click to check updates">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span>v1.2.0</span>
+                <span>v1.3.0</span>
             </button>
             <button onclick="playAppOpener(true)" class="w-7 h-7 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 flex items-center justify-center transition text-purple-500 cursor-pointer" title="Replay Opener">
                 <i class="fa-solid fa-play text-xs"></i>
@@ -353,68 +353,77 @@
         <div id="viewFilesList" class="space-y-4">
 
         <!-- 7 Category Cards Grid (Displays Location Unsorted or Assorted Folder counts) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3" id="categoryCardsGrid">
-            <!-- 1. Images -->
-            <div onclick="filterCategory('Images')" id="card-Images" class="glass-card border border-slate-200 dark:border-white/5 hover:border-pink-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
-                <div class="w-11 h-11 rounded-2xl bg-pink-500/15 text-pink-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-image"></i>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3" id="categoryCardsGrid">
+            <!-- 1. Design (Photoshop, Illustrator, 3D, Figma) -->
+            <div onclick="filterCategory('Design')" id="card-Design" class="cat-bento-card bg-[#e4f6b6] dark:bg-lime-950/40 text-lime-950 dark:text-lime-200 border border-lime-300 dark:border-lime-700/50 p-3.5 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col items-center text-center group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                <div class="w-10 h-10 rounded-xl bg-white/80 dark:bg-black/30 flex items-center justify-center text-lg mb-1.5 group-hover:scale-110 transition shadow-xs">
+                    🎨
                 </div>
-                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Images</h3>
-                <span id="card-stat-Images" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+                <h3 class="font-bold text-xs tracking-tight">Design</h3>
+                <span id="card-stat-Design" class="text-[10px] opacity-75 mt-0.5 font-mono">0 B &bull; 0</span>
             </div>
 
-            <!-- 2. Videos -->
-            <div onclick="filterCategory('Videos')" id="card-Videos" class="glass-card border border-slate-200 dark:border-white/5 hover:border-purple-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
-                <div class="w-11 h-11 rounded-2xl bg-purple-500/15 text-purple-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-video"></i>
+            <!-- 2. Images -->
+            <div onclick="filterCategory('Images')" id="card-Images" class="cat-bento-card bg-[#bbf2e8] dark:bg-teal-950/40 text-teal-950 dark:text-teal-200 border border-teal-300 dark:border-teal-700/50 p-3.5 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col items-center text-center group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                <div class="w-10 h-10 rounded-xl bg-white/80 dark:bg-black/30 flex items-center justify-center text-lg mb-1.5 group-hover:scale-110 transition shadow-xs">
+                    🥐
                 </div>
-                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Videos</h3>
-                <span id="card-stat-Videos" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+                <h3 class="font-bold text-xs tracking-tight">Images</h3>
+                <span id="card-stat-Images" class="text-[10px] opacity-75 mt-0.5 font-mono">0 B &bull; 0</span>
             </div>
 
-            <!-- 3. Documents -->
-            <div onclick="filterCategory('Documents')" id="card-Documents" class="glass-card border border-slate-200 dark:border-white/5 hover:border-blue-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
-                <div class="w-11 h-11 rounded-2xl bg-blue-500/15 text-blue-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-file-lines"></i>
+            <!-- 3. Videos -->
+            <div onclick="filterCategory('Videos')" id="card-Videos" class="cat-bento-card bg-[#e2c8f8] dark:bg-purple-950/40 text-purple-950 dark:text-purple-200 border border-purple-300 dark:border-purple-700/50 p-3.5 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col items-center text-center group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                <div class="w-10 h-10 rounded-xl bg-white/80 dark:bg-black/30 flex items-center justify-center text-lg mb-1.5 group-hover:scale-110 transition shadow-xs">
+                    📺
                 </div>
-                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Documents</h3>
-                <span id="card-stat-Documents" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+                <h3 class="font-bold text-xs tracking-tight">Videos</h3>
+                <span id="card-stat-Videos" class="text-[10px] opacity-75 mt-0.5 font-mono">0 B &bull; 0</span>
             </div>
 
-            <!-- 4. Audio -->
-            <div onclick="filterCategory('Audio')" id="card-Audio" class="glass-card border border-slate-200 dark:border-white/5 hover:border-amber-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
-                <div class="w-11 h-11 rounded-2xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-music"></i>
+            <!-- 4. Documents -->
+            <div onclick="filterCategory('Documents')" id="card-Documents" class="cat-bento-card bg-[#c8c7d8] dark:bg-slate-800 text-slate-900 dark:text-slate-200 border border-slate-300 dark:border-slate-700 p-3.5 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col items-center text-center group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                <div class="w-10 h-10 rounded-xl bg-white/80 dark:bg-black/30 flex items-center justify-center text-lg mb-1.5 group-hover:scale-110 transition shadow-xs">
+                    🔬
                 </div>
-                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Audio</h3>
-                <span id="card-stat-Audio" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+                <h3 class="font-bold text-xs tracking-tight">Documents</h3>
+                <span id="card-stat-Documents" class="text-[10px] opacity-75 mt-0.5 font-mono">0 B &bull; 0</span>
             </div>
 
-            <!-- 5. Archives -->
-            <div onclick="filterCategory('Archives')" id="card-Archives" class="glass-card border border-slate-200 dark:border-white/5 hover:border-orange-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
-                <div class="w-11 h-11 rounded-2xl bg-orange-500/15 text-orange-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-file-zipper"></i>
+            <!-- 5. Audio -->
+            <div onclick="filterCategory('Audio')" id="card-Audio" class="cat-bento-card bg-[#fed7aa] dark:bg-amber-950/40 text-amber-950 dark:text-amber-200 border border-amber-300 dark:border-amber-700/50 p-3.5 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col items-center text-center group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                <div class="w-10 h-10 rounded-xl bg-white/80 dark:bg-black/30 flex items-center justify-center text-lg mb-1.5 group-hover:scale-110 transition shadow-xs">
+                    🎵
                 </div>
-                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Archives</h3>
-                <span id="card-stat-Archives" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+                <h3 class="font-bold text-xs tracking-tight">Audio</h3>
+                <span id="card-stat-Audio" class="text-[10px] opacity-75 mt-0.5 font-mono">0 B &bull; 0</span>
             </div>
 
-            <!-- 6. Installers -->
-            <div onclick="filterCategory('Installers')" id="card-Installers" class="glass-card border border-slate-200 dark:border-white/5 hover:border-emerald-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
-                <div class="w-11 h-11 rounded-2xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-box-archive"></i>
+            <!-- 6. Archives -->
+            <div onclick="filterCategory('Archives')" id="card-Archives" class="cat-bento-card bg-[#fde68a] dark:bg-yellow-950/40 text-yellow-950 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700/50 p-3.5 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col items-center text-center group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                <div class="w-10 h-10 rounded-xl bg-white/80 dark:bg-black/30 flex items-center justify-center text-lg mb-1.5 group-hover:scale-110 transition shadow-xs">
+                    🗜️
                 </div>
-                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Installers</h3>
-                <span id="card-stat-Installers" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+                <h3 class="font-bold text-xs tracking-tight">Archives</h3>
+                <span id="card-stat-Archives" class="text-[10px] opacity-75 mt-0.5 font-mono">0 B &bull; 0</span>
             </div>
 
-            <!-- 7. Code -->
-            <div onclick="filterCategory('Code')" id="card-Code" class="glass-card border border-slate-200 dark:border-white/5 hover:border-blue-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm">
-                <div class="w-11 h-11 rounded-2xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-code"></i>
+            <!-- 7. Installers -->
+            <div onclick="filterCategory('Installers')" id="card-Installers" class="cat-bento-card bg-[#bae6fd] dark:bg-sky-950/40 text-sky-950 dark:text-sky-200 border border-sky-300 dark:border-sky-700/50 p-3.5 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col items-center text-center group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                <div class="w-10 h-10 rounded-xl bg-white/80 dark:bg-black/30 flex items-center justify-center text-lg mb-1.5 group-hover:scale-110 transition shadow-xs">
+                    📦
                 </div>
-                <h3 class="font-semibold text-xs text-slate-800 dark:text-slate-200">Code</h3>
-                <span id="card-stat-Code" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">0 B &bull; 0</span>
+                <h3 class="font-bold text-xs tracking-tight">Installers</h3>
+                <span id="card-stat-Installers" class="text-[10px] opacity-75 mt-0.5 font-mono">0 B &bull; 0</span>
+            </div>
+
+            <!-- 8. Code -->
+            <div onclick="filterCategory('Code')" id="card-Code" class="cat-bento-card bg-[#ddd6fe] dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-700/50 p-3.5 rounded-2xl transition-all duration-200 cursor-pointer flex flex-col items-center text-center group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                <div class="w-10 h-10 rounded-xl bg-white/80 dark:bg-black/30 flex items-center justify-center text-lg mb-1.5 group-hover:scale-110 transition shadow-xs">
+                    💻
+                </div>
+                <h3 class="font-bold text-xs tracking-tight">Code</h3>
+                <span id="card-stat-Code" class="text-[10px] opacity-75 mt-0.5 font-mono">0 B &bull; 0</span>
             </div>
         </div>
 
@@ -491,6 +500,10 @@
                     <button onclick="filterCategory('ALL', this)" class="filter-tab px-3 py-1 rounded-xl text-xs font-medium bg-blue-600 border border-blue-500 text-white shadow-sm transition flex items-center space-x-2 whitespace-nowrap">
                         <i class="fa-solid fa-asterisk text-[10px]"></i>
                         <span>All</span>
+                    </button>
+                    <button onclick="filterCategory('Design', this)" class="filter-tab px-3 py-1 rounded-xl text-xs font-medium glass-card border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center space-x-2 whitespace-nowrap">
+                        <i class="fa-solid fa-palette text-[10px] text-lime-500"></i>
+                        <span>Design</span>
                     </button>
                     <button onclick="filterCategory('Images', this)" class="filter-tab px-3 py-1 rounded-xl text-xs font-medium glass-card border border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center space-x-2 whitespace-nowrap">
                         <i class="fa-solid fa-image text-[10px] text-pink-500"></i>
@@ -833,7 +846,7 @@
                     <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/5">
                         <div class="flex items-center space-x-2">
                             <i class="fa-solid fa-code-branch text-blue-500 text-xs"></i>
-                            <span class="text-[11px] font-mono text-slate-700 dark:text-slate-300">Installed: Organix v1.2.0 Pro</span>
+                            <span class="text-[11px] font-mono text-slate-700 dark:text-slate-300">Installed: Organix v1.3.0 Pro</span>
                         </div>
                         <button onclick="checkAppUpdate(true)" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-semibold transition active:scale-95 shadow-sm cursor-pointer">
                             Check Now
@@ -952,7 +965,8 @@
         let longPressTimer = null;
 
         const ICON_MAP = {
-            'Images': 'fa-solid fa-image text-pink-500',
+            'Design': 'fa-solid fa-palette text-lime-600 dark:text-lime-400',
+            'Images': 'fa-solid fa-image text-emerald-500',
             'Videos': 'fa-solid fa-video text-purple-500',
             'Documents': 'fa-solid fa-file-lines text-blue-500',
             'PDF': 'fa-solid fa-file-pdf text-red-500',
@@ -983,6 +997,7 @@
         };
 
         const GROUPINGS = {
+            'Design': ['Design'],
             'Documents': ['Documents', 'PDF', 'Spreadsheets', 'Presentations'],
             'Images': ['Images'],
             'Videos': ['Videos'],
@@ -1311,7 +1326,7 @@
         }
 
         function updateCategoryCards(summary) {
-            const categories = ['Images', 'Videos', 'Documents', 'Audio', 'Archives', 'Installers', 'Code'];
+            const categories = ['Design', 'Images', 'Videos', 'Documents', 'Audio', 'Archives', 'Installers', 'Code'];
             categories.forEach(cat => {
                 let count = 0;
                 let bytes = 0;
@@ -1330,7 +1345,7 @@
         }
 
         function updateAssortedCategoryCards() {
-            const categories = ['Images', 'Videos', 'Documents', 'Audio', 'Archives', 'Installers', 'Code'];
+            const categories = ['Design', 'Images', 'Videos', 'Documents', 'Audio', 'Archives', 'Installers', 'Code'];
             categories.forEach(cat => {
                 let count = 0;
                 let bytes = 0;
@@ -1362,13 +1377,14 @@
                 activeDocSubFilter = 'all';
             }
 
-            // Highlight category card
+            // Highlight category card without wiping pastel styling
             document.querySelectorAll('#categoryCardsGrid > div').forEach(card => {
-                if (card.id === `card-${category}`) {
-                    card.className = "glass-card border border-blue-500/80 bg-blue-500/10 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-md shadow-blue-500/10";
-                } else {
-                    card.className = "glass-card border border-slate-200 dark:border-white/5 hover:border-blue-500/50 p-3.5 rounded-2xl transition cursor-pointer flex flex-col items-center text-center group shadow-sm";
-                }
+                const isActive = (card.id === `card-${category}`);
+                card.classList.toggle('ring-2', isActive);
+                card.classList.toggle('ring-blue-600', isActive);
+                card.classList.toggle('dark:ring-white', isActive);
+                card.classList.toggle('scale-105', isActive);
+                card.classList.toggle('shadow-lg', isActive);
             });
 
             // Highlight pill if clicked
@@ -1762,6 +1778,90 @@
             return btoa(encodeURIComponent(path)).replace(/=/g, '');
         }
 
+        
+        // =========================================================
+        // FILE SHARE SYSTEM (Bluetooth, WhatsApp, Mail, Telegram)
+        // =========================================================
+        let currentShareFile = { path: '', name: '', category: '' };
+
+        function openShareModal(encodedPath, fileName, category) {
+            const filePath = decodeURIComponent(encodedPath);
+            currentShareFile = { path: filePath, name: fileName, category: category };
+            
+            const nameEl = document.getElementById('shareModalFileName');
+            const pathEl = document.getElementById('shareModalFilePath');
+            const iconEl = document.getElementById('shareModalFileIcon');
+            
+            if (nameEl) nameEl.textContent = fileName || 'File';
+            if (pathEl) pathEl.textContent = filePath || '';
+            
+            const emojiMap = {
+                'Design': '🎨',
+                'Images': '🥐',
+                'Videos': '📺',
+                'Documents': '🔬',
+                'Audio': '🎵',
+                'Archives': '🗜️',
+                'Installers': '📦',
+                'Code': '💻'
+            };
+            if (iconEl) iconEl.textContent = emojiMap[category] || '📁';
+            
+            const modal = document.getElementById('shareModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeShareModal() {
+            const modal = document.getElementById('shareModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function copySharePath() {
+            if (!currentShareFile.path) return;
+            navigator.clipboard.writeText(currentShareFile.path).then(() => {
+                showToast(`Copied path: ${currentShareFile.name}`);
+            }).catch(() => {
+                showToast(`Path: ${currentShareFile.path}`);
+            });
+        }
+
+        async function triggerShareTarget(target) {
+            if (!currentShareFile.path) {
+                showToast("No file selected to share", "error");
+                return;
+            }
+            try {
+                showToast(`Preparing ${target} share...`);
+                const res = await fetch('/api/share', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: currentShareFile.path, target: target })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || `Shared via ${target}!`);
+                    closeShareModal();
+                } else {
+                    showToast(data.error || "Failed to share file", "error");
+                }
+            } catch (err) {
+                showToast("Share request failed: " + err.message, "error");
+            }
+        }
+
+        function ctxShareItem() {
+            if (!contextMenuItem) return;
+            const filePath = contextMenuItem.path || contextMenuItem.src;
+            hideContextMenu();
+            openShareModal(encodeURIComponent(filePath), contextMenuItem.name, contextMenuItem.category);
+        }
+
         function renderListRow(item, isAssorted) {
             const filePath = item.path || item.src;
             const isImg = isImageFile(item.name);
@@ -1818,12 +1918,20 @@
                             <i class="fa-solid fa-play text-[10px]"></i>
                             <span>Open</span>
                         </button>
+                        <button onclick="openShareModal('${encodeURIComponent(filePath)}', '${escapeHtml(item.name)}', '${escapeHtml(item.category)}')" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 px-2.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1.5 active:scale-95" title="Share via Bluetooth, WhatsApp, Mail, etc.">
+                            <i class="fa-solid fa-share-nodes text-xs"></i>
+                            <span>Share</span>
+                        </button>
                         <button onclick="revealInFinder('${encodeURIComponent(filePath)}')" class="glass-card hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1.5 active:scale-95" title="Reveal in File Explorer">
                             <i class="fa-solid fa-folder-open text-slate-400 text-xs"></i>
                             <span>Explorer</span>
                         </button>
                         `
                         : `
+                        <button onclick="openShareModal('${encodeURIComponent(item.src)}', '${escapeHtml(item.name)}', '${escapeHtml(item.category)}')" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 px-2.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1.5 active:scale-95" title="Share via Bluetooth, WhatsApp, Mail, etc.">
+                            <i class="fa-solid fa-share-nodes text-xs"></i>
+                            <span>Share</span>
+                        </button>
                         <button onclick="revealInFinder('${encodeURIComponent(item.src)}')" class="glass-card hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center space-x-1.5 active:scale-95">
                             <i class="fa-solid fa-folder-open text-slate-400 text-xs"></i>
                             <span>Explorer</span>
@@ -1891,6 +1999,9 @@
                             <i class="fa-solid fa-play text-[8px]"></i>
                             <span>Open</span>
                         </button>
+                        <button onclick="openShareModal('${encodeURIComponent(filePath)}', '${escapeHtml(item.name)}', '${escapeHtml(item.category)}')" class="p-1 px-2 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 transition text-[10px]" title="Share via Bluetooth, WhatsApp, Mail">
+                            <i class="fa-solid fa-share-nodes text-[9px]"></i>
+                        </button>
                         <button onclick="revealInFinder('${encodeURIComponent(filePath)}')" class="p-1 px-2 rounded-lg bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-600 dark:text-slate-300 transition text-[10px]" title="Explorer">
                             <i class="fa-solid fa-folder-open text-[9px]"></i>
                         </button>
@@ -1899,6 +2010,9 @@
                         <button onclick="organizeItems([${JSON.stringify(item).replace(/"/g, '&quot;')}])" class="flex-1 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[10px] font-medium transition shadow-sm flex items-center justify-center space-x-1">
                             <i class="fa-solid fa-arrow-right-to-bracket text-[8px]"></i>
                             <span>Move</span>
+                        </button>
+                        <button onclick="openShareModal('${encodeURIComponent(item.src)}', '${escapeHtml(item.name)}', '${escapeHtml(item.category)}')" class="p-1 px-2 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 transition text-[10px]" title="Share via Bluetooth, WhatsApp, Mail">
+                            <i class="fa-solid fa-share-nodes text-[9px]"></i>
                         </button>
                         <button onclick="revealInFinder('${encodeURIComponent(item.src)}')" class="p-1 px-2 rounded-lg bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-600 dark:text-slate-300 transition text-[10px]" title="Explorer">
                             <i class="fa-solid fa-folder-open text-[9px]"></i>
@@ -2575,18 +2689,18 @@
                         }
                         showToast(`New version v${data.latest_version} available! Click to update.`, 'info');
                     } else {
-                        if (btnDash) btnDash.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>v${data.current_version || '1.2.0'}</span>`;
-                        if (btnHeader) btnHeader.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>v${data.current_version || '1.2.0'}</span>`;
+                        if (btnDash) btnDash.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>v${data.current_version || '1.3.0'}</span>`;
+                        if (btnHeader) btnHeader.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>v${data.current_version || '1.3.0'}</span>`;
 
                         if (showFeedback) {
-                            showToast(`Organix is up to date (v${data.current_version || '1.2.0'} Stable)`, 'success');
+                            showToast(`Organix is up to date (v${data.current_version || '1.3.0'} Stable)`, 'success');
                         }
                     }
                 }, 400);
             } catch (e) {
                 if (btnDash) btnDash.innerHTML = origDash;
                 if (btnHeader) btnHeader.innerHTML = origHeader;
-                if (showFeedback) showToast("Organix Pro v1.2.0 (Up to date)", 'info');
+                if (showFeedback) showToast("Organix Pro v1.3.0 (Up to date)", 'info');
             }
         }
 
@@ -2602,5 +2716,118 @@
         }
 
     </script>
+
+    <!-- ============================================================= -->
+    <!-- CONNECTIFY-STYLE FILE SHARE MODAL                             -->
+    <!-- ============================================================= -->
+    <div id="shareModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-[28px] shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+            <!-- Header -->
+            <div class="p-5 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-semibold">
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-900 dark:text-white">Share File</h3>
+                        <p class="text-[10px] text-slate-400">Bluetooth, messaging, email, or explorer</p>
+                    </div>
+                </div>
+                <button onclick="closeShareModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Selected File Info Banner -->
+            <div class="p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-white/5 flex items-center space-x-3">
+                <div id="shareModalFileIcon" class="w-11 h-11 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 flex items-center justify-center text-xl shrink-0 shadow-xs">
+                    📁
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h4 id="shareModalFileName" class="font-bold text-xs text-slate-900 dark:text-white truncate">filename.ext</h4>
+                    <p id="shareModalFilePath" class="text-[10px] font-mono text-slate-400 truncate mt-0.5">C:\...</p>
+                </div>
+                <button onclick="copySharePath()" class="text-[11px] font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700 px-2.5 py-1.5 rounded-xl transition flex items-center space-x-1 shrink-0">
+                    <i class="fa-regular fa-copy text-xs"></i>
+                    <span>Copy Path</span>
+                </button>
+            </div>
+
+            <!-- Bento Share Channels -->
+            <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                <!-- Bluetooth Transfer (fsquirt.exe) -->
+                <button onclick="triggerShareTarget('bluetooth')" class="bg-cyan-50 dark:bg-cyan-950/40 hover:bg-cyan-100 dark:hover:bg-cyan-900/50 border border-cyan-200 dark:border-cyan-800/40 p-3.5 rounded-2xl transition flex items-center space-x-3 text-left group">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500 text-white flex items-center justify-center text-lg shrink-0 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-brands fa-bluetooth-b"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h5 class="font-bold text-xs text-cyan-950 dark:text-cyan-200">Bluetooth</h5>
+                        <p class="text-[10px] text-cyan-700/80 dark:text-cyan-400/80 truncate">Send to nearby phone/PC</p>
+                    </div>
+                </button>
+
+                <!-- WhatsApp -->
+                <button onclick="triggerShareTarget('whatsapp')" class="bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800/40 p-3.5 rounded-2xl transition flex items-center space-x-3 text-left group">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-lg shrink-0 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h5 class="font-bold text-xs text-emerald-950 dark:text-emerald-200">WhatsApp</h5>
+                        <p class="text-[10px] text-emerald-700/80 dark:text-emerald-400/80 truncate">Share via WhatsApp Web</p>
+                    </div>
+                </button>
+
+                <!-- Email -->
+                <button onclick="triggerShareTarget('email')" class="bg-sky-50 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-200 dark:border-sky-800/40 p-3.5 rounded-2xl transition flex items-center space-x-3 text-left group">
+                    <div class="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center text-lg shrink-0 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h5 class="font-bold text-xs text-sky-950 dark:text-sky-200">Email</h5>
+                        <p class="text-[10px] text-sky-700/80 dark:text-sky-400/80 truncate">Draft in default mail client</p>
+                    </div>
+                </button>
+
+                <!-- Telegram -->
+                <button onclick="triggerShareTarget('telegram')" class="bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800/40 p-3.5 rounded-2xl transition flex items-center space-x-3 text-left group">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center text-lg shrink-0 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-brands fa-telegram"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h5 class="font-bold text-xs text-blue-950 dark:text-blue-200">Telegram</h5>
+                        <p class="text-[10px] text-blue-700/80 dark:text-blue-400/80 truncate">Send to Telegram chat</p>
+                    </div>
+                </button>
+
+                <!-- Facebook -->
+                <button onclick="triggerShareTarget('facebook')" class="bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-800/40 p-3.5 rounded-2xl transition flex items-center space-x-3 text-left group">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-lg shrink-0 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-brands fa-facebook"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h5 class="font-bold text-xs text-indigo-950 dark:text-indigo-200">Facebook</h5>
+                        <p class="text-[10px] text-indigo-700/80 dark:text-indigo-400/80 truncate">Share on Facebook</p>
+                    </div>
+                </button>
+
+                <!-- Reveal in Explorer -->
+                <button onclick="triggerShareTarget('reveal')" class="bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 dark:hover:bg-purple-900/50 border border-purple-200 dark:border-purple-800/40 p-3.5 rounded-2xl transition flex items-center space-x-3 text-left group">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500 text-white flex items-center justify-center text-lg shrink-0 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h5 class="font-bold text-xs text-purple-950 dark:text-purple-200">Explorer</h5>
+                        <p class="text-[10px] text-purple-700/80 dark:text-purple-400/80 truncate">Highlight in folder</p>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Footer note -->
+            <div class="p-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-white/5 text-center text-[10px] text-slate-400">
+                <span>Select any destination above to share or transfer this file directly.</span>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

@@ -179,7 +179,7 @@ class OrganizerServer(BaseHTTPRequestHandler):
             return
 
         if path == "/api/check-update":
-            current_ver = "1.2.0"
+            current_ver = "1.3.0"
             latest_ver = current_ver
             download_url = "https://github.com/mashadcloud-art/Organix/releases/latest"
             release_notes = [
@@ -636,6 +636,60 @@ class OrganizerServer(BaseHTTPRequestHandler):
                 "total_size_human": core.human_size(sum(op.get("size", 0) for op in plan)),
                 "message": f"Organized {len(result.get('moved', []))} files into {dest_path.name}/"
             })
+            return
+
+        if path == "/api/share":
+            file_path_str = body.get("path", "")
+            target = body.get("target", "system")
+            if not file_path_str:
+                self._send_json({"success": False, "error": "Missing file path"}, status=400)
+                return
+            
+            p = Path(file_path_str)
+            if not p.exists():
+                self._send_json({"success": False, "error": "File does not exist"}, status=404)
+                return
+
+            if target == "bluetooth":
+                fsquirt_path = Path("C:/Windows/System32/fsquirt.exe")
+                if fsquirt_path.exists():
+                    os.startfile(str(fsquirt_path))
+                    self._send_json({"success": True, "message": "Bluetooth File Transfer wizard launched!"})
+                    return
+                else:
+                    self._send_json({"success": False, "error": "Bluetooth Transfer (fsquirt.exe) not found."}, status=404)
+                    return
+
+            elif target == "whatsapp":
+                msg = urllib.parse.quote(f"Sharing file from Organix: {p.name}\nPath: {str(p)}")
+                webbrowser.open(f"https://web.whatsapp.com/send?text={msg}")
+                self._send_json({"success": True, "message": "Opened WhatsApp Web share!"})
+                return
+
+            elif target == "email":
+                subject = urllib.parse.quote(f"Organix File: {p.name}")
+                body_txt = urllib.parse.quote(f"Sharing file: {p.name}\nLocation: {str(p)}\nSize: {core.human_size(p.stat().st_size if p.is_file() else 0)}")
+                webbrowser.open(f"mailto:?subject={subject}&body={body_txt}")
+                self._send_json({"success": True, "message": "Opened default mail client!"})
+                return
+
+            elif target == "telegram":
+                text_t = urllib.parse.quote(f"Sharing {p.name} from Organix")
+                webbrowser.open(f"https://t.me/share/url?url={urllib.parse.quote(str(p))}&text={text_t}")
+                self._send_json({"success": True, "message": "Opened Telegram share!"})
+                return
+
+            elif target == "facebook":
+                webbrowser.open(f"https://www.facebook.com/sharer/sharer.php?u={urllib.parse.quote('https://github.com/mashadcloud-art/Organix')}")
+                self._send_json({"success": True, "message": "Opened Facebook share!"})
+                return
+
+            elif target == "reveal":
+                subprocess.Popen(["explorer.exe", f"/select,{str(p)}"])
+                self._send_json({"success": True, "message": "Highlighted in Windows File Explorer!"})
+                return
+
+            self._send_json({"success": False, "error": "Unknown share target"}, status=400)
             return
 
         if path == "/api/toggle-autoupdate":

@@ -37,6 +37,7 @@ SYSTEM_DIR_NAMES = {"$recycle.bin", "system volume information", "recovery",
 # Edit rules.json next to the app to customise, or use the "Edit Rules" button.
 # ---------------------------------------------------------------------------
 DEFAULT_RULES: dict[str, list[str]] = {
+    "Design": ["psd", "psb", "ai", "eps", "indd", "fig", "sketch", "xd", "blend", "c4d", "obj", "fbx", "stl", "3ds", "dae", "prproj", "aep", "dwg", "dxf", "cdr", "afphoto", "afdesign", "afpub", "kra", "clip", "procreate", "aseprite"],
     "Images": ["jpg", "jpeg", "png", "gif", "bmp", "webp", "tif", "tiff", "svg",
                "heic", "heif", "raw", "cr2", "nef", "arw", "dng", "ico"],
     "PDF": ["pdf"],
@@ -105,7 +106,16 @@ def category_for(path: Path, ext_map: dict[str, str]) -> str:
     ext = path.suffix.lower().lstrip(".")
     if not ext:
         return "Other"
-    return ext_map.get(ext, "Other")
+    cat = ext_map.get(ext)
+    if cat:
+        return cat
+    # Design / Photoshop auto-fallback
+    if ext in ("psd", "psb", "ai", "eps", "indd", "fig", "sketch", "xd", "blend"):
+        return "Design"
+    # Auto-create dedicated folder for any specific extension (e.g. "DWG Files", "XYZ Files")
+    if len(ext) <= 6 and ext.isalnum():
+        return f"{ext.upper()} Files"
+    return "Other"
 
 
 # ---------------------------------------------------------------------------

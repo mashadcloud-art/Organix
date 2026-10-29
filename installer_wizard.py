@@ -15,7 +15,7 @@ import psutil
 import win32com.client
 
 APP_NAME = "Organix"
-APP_VERSION = "1.2.0"
+APP_VERSION = "1.3.0"
 APP_DESCRIPTION = "Smart Desktop & Multi-Location File Organizer"
 DEFAULT_INSTALL_DIR = str(Path(os.environ.get("LOCALAPPDATA", str(Path.home() / "AppData" / "Local"))) / "Programs" / "Organix")
 
